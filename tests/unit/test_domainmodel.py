@@ -1,5 +1,7 @@
 import pytest
 from datetime import datetime
+from recipe.domainmodel.review import Review
+from recipe.domainmodel.favourite import Favourite
 from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.user import User
 from recipe.domainmodel.author import Author
@@ -282,3 +284,135 @@ def test_hash_nutrition():
     n3 = Nutrition(3,100,5,2,8,20,10,3,2,5)
     assert hash(n1) == hash(n2)
     assert hash(n1) != hash(n3)
+
+
+class MockUser:
+    def __init__(self, user_id):
+        self.user_id = user_id
+
+    def __repr__(self):
+        return f"User{self.user_id}"
+
+class MockRecipe:
+    def __init__(self, recipe_id, recipe_name):
+        self.recipe_id = recipe_id
+        self.recipe_name = recipe_name
+
+    def __eq__(self, other) -> bool:
+        return isinstance(other, MockRecipe) and self.recipe_id == other.recipe_id
+
+    def __hash__(self) -> int:
+        return hash(self.recipe_id)
+
+    def __repr__(self) -> str:
+        return f"Recipe{self.recipe_id}"
+
+def test_favourite_initialization():
+    user = MockUser("Eve")
+    fav = Favourite(favourite_id= 1, user=user)
+
+    assert fav.id == 1
+    assert fav.user == user
+    assert fav.recipes == []
+
+def test_add_recipe_favourite():
+    user = MockUser("Bob")
+    recipe = MockRecipe(2, "Pizza")
+    fav = Favourite(favourite_id= 1, user=user)
+    fav.add_recipe(recipe)
+    assert recipe in fav.recipes
+
+def test_add_duplicate_recipe_favourite():
+    user = MockUser("Bob")
+    recipe = MockRecipe(101, "Pizza")
+    fav = Favourite(favourite_id= 2, user=user)
+    fav.add_recipe(recipe)
+    fav.add_recipe(recipe)
+
+    assert fav.recipes.count(recipe) == 1
+
+
+def test_remove_recipe_favourite():
+    user = MockUser("Dave")
+    r1 = MockRecipe(101, "Chip")
+    r2 = MockRecipe(102, "Mustard" )
+    fav = Favourite(favourite_id= 3, user=user, recipes=[r1, r2])
+    fav.remove_recipe(r1)
+    assert r1 not in fav.recipes
+    assert r2 in fav.recipes
+
+def test_remove_nonexistent_recipe_favourite():
+    user = MockUser("Bob2")
+    r1 = MockRecipe(301, "Brick")
+    r2 = MockRecipe(302, "Brick2")
+    fav = Favourite(favourite_id= 4, user=user, recipes=[r1])
+    fav.remove_recipe(r2)
+    assert fav.recipes == [r1]
+
+def test_repr_favourite():
+    user = MockUser("BobAgain")
+    recipe = MockRecipe(402, "Burger")
+    fav = Favourite(favourite_id= 5, user=user, recipes=[recipe])
+    assert repr(fav) == f"{user}: [{recipe}]"
+
+def test_hash_favourite():
+    user = MockUser("Bob")
+    fav1 = Favourite(favourite_id= 6, user=user)
+    fav2 = Favourite(favourite_id= 6, user=user)
+    assert hash(fav1) == hash(fav2)
+
+
+def test_review_initialization():
+    user = MockUser("Bob")
+    recipe = MockRecipe(1, "Burger")
+    review = Review(1, user, recipe,5,"edible")
+
+    assert review.id == 1
+    assert review.user == user
+    assert review.recipe == recipe
+    assert review.rating == 5
+    assert review.review_text == "edible"
+    assert isinstance(review.date, datetime)
+
+def test_review_custom_data():
+    user = MockUser("Bob")
+    recipe = MockRecipe(2, "Sushi")
+    custom_date = (2025,1,1)
+    review = Review(2, user, recipe,4,"edible", created_date=custom_date)
+
+    assert review.date == custom_date
+
+def test_review_rating_setter_valid():
+    user = MockUser("Bob")
+    recipe = MockRecipe(3, "Burger")
+    review = Review(3, user, recipe,5,"edible")
+    review.rating = 5
+    assert review.rating == 5
+
+def test_review_rating_setter_invalid():
+    user = MockUser("Bob")
+    recipe = MockRecipe(4, "Burger")
+    review = Review(4, user, recipe,5,"edible")
+    with pytest.raises(ValueError):
+        review.rating = 6
+
+def test_review_text_setter():
+    user = MockUser("Bob")
+    recipe = MockRecipe(6, "Burger")
+    review = Review(6, user, recipe,5,"ok")
+    review.review_text = "ok"
+    assert review.review_text == "ok"
+
+def test_review_repr():
+    user = MockUser("Bob")
+    recipe = MockRecipe(7, "Burger")
+    review = Review(7, user, recipe,9,"wow")
+    expected_repr = f"{user}: {recipe}: 9 - wow"
+    assert repr(review) == expected_repr
+
+def test_review_hash():
+    user = MockUser("Bob")
+    recipe = MockRecipe(8, "Burger")
+    review1 = Review(8, user, recipe,4,"crap")
+    review2 = Review(8,user,recipe,2,"burnt the kitchen down")
+    assert hash(review1) == hash(review2)
