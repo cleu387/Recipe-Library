@@ -25,6 +25,9 @@ class Nutrition:
             return self.calories < other.calories
         return None
 
+    def __hash__(self) -> int:
+        return hash(self.__nutrition_id)
+
     @property
     def id(self) -> int:
         return self.__nutrition_id
