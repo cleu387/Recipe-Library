@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-
+from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.user import User
 from recipe.domainmodel.author import Author
 from recipe.domainmodel.category import Category
@@ -232,3 +232,53 @@ def test_author_set_recipe_invalid_type(my_author):
     with pytest.raises(TypeError):
         my_author.add_recipe("not a recipe")
 
+@pytest.fixture
+def nutrition_sample():
+    return Nutrition(
+        nutrition_id=1,
+        calories=200,
+        fat=8,
+        saturated_fat=3,
+        cholesterol=10,
+        sodium=5,
+        carbohydrates=1,
+        fiber=5,
+        sugar=12,
+        protein=3,
+    )
+def test_properties_nutrition(nutrition_sample):
+    assert nutrition_sample.id == 1
+    assert nutrition_sample.calories == 200
+    assert nutrition_sample.fat == 8
+    assert nutrition_sample.saturated_fat == 3
+    assert nutrition_sample.cholesterol == 10
+    assert nutrition_sample.sodium == 5
+    assert nutrition_sample.carbohydrates == 1
+    assert nutrition_sample.fiber == 5
+    assert nutrition_sample.sugar == 12
+    assert nutrition_sample.protein == 3
+
+def test_repr_nutrition(nutrition_sample):
+    repr_str = repr(nutrition_sample)
+    assert "Calories: 200" in repr_str
+    assert "Protein: 3" in repr_str
+
+def test_equality_nutrition():
+    n1 = Nutrition(1,100,5,2,8,20,10,3,2,5)
+    n2 = Nutrition(2,100,5,2,8,20,10,3,2,5)
+    n3 = Nutrition(3,2,3,4,5,6,7,8,9,10)
+    assert n1 == n2
+    assert n1 != n3
+
+def test_less_than_nutrition():
+    low_cal = Nutrition(1,100,5,2,10,100,20,2,8,6)
+    high_cal = Nutrition(2,500,10,5,20,200,32,11,40,22)
+    assert low_cal < high_cal
+    assert not high_cal < low_cal
+
+def test_hash_nutrition():
+    n1 = Nutrition(1,100,5,2,8,20,10,3,2,5)
+    n2 = Nutrition(1,200,3,4,55,22,11,33,22,11)
+    n3 = Nutrition(3,100,5,2,8,20,10,3,2,5)
+    assert hash(n1) == hash(n2)
+    assert hash(n1) != hash(n3)
