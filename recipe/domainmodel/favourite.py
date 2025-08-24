@@ -6,15 +6,15 @@ if TYPE_CHECKING:
     from recipe.domainmodel.recipe import Recipe
 
 class Favourite:
-    def __init__(self, favourite_id: int, user = "User", recipes: list[Recipe] = None):
+    def __init__(self, favourite_id: int, user: User, recipes: list[Recipe] = None):
         self.__id = favourite_id
         self.__user = user
         self.__recipes = recipes if recipes is not None else []
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.user}: {self.recipes}"
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> int :
         return hash(self.__id)
 
     def add_recipe(self, recipe: Recipe) -> None:
@@ -26,7 +26,7 @@ class Favourite:
             self.__recipes.remove(recipe)
 
     @property
-    def user(self) -> str:
+    def user(self) -> User:
         return self.__user
 
     @property

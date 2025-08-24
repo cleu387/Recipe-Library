@@ -12,18 +12,18 @@ class Nutrition:
         self.__protein = protein
 
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Calories: {self.calories}, Fat: {self.fat}, Saturated fat: {self.saturated_fat}, Cholesterol: {self.cholesterol}, Sodium: {self.sodium}, Carbohydrates: {self.carbohydrates}, Fiber: {self.fiber}, Sugar: {self.sugar}, Protein: {self.protein}"
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if isinstance(other, Nutrition):
             return self.calories == other.calories and self.fat == other.fat and self.cholesterol == other.cholesterol and self.sodium == other.sodium and self.carbohydrates == other.carbohydrates and self.fiber == other.fiber and self.sugar == other.sugar and self.protein == other.protein
         return False
 
-    def __lt__(self, other):
+    def __lt__(self, other) -> bool:
         if isinstance(other, Nutrition):
             return self.calories < other.calories
-        return None
+        return False
 
     def __hash__(self) -> int:
         return hash(self.__nutrition_id)
