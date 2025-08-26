@@ -27,3 +27,13 @@ def browse_recipes():
         total_pages=total_pages,
         endpoint="recipe_bp.browse_recipes",
     )
+
+@browse_blueprint.route("/recipe/<int:recipe_id>", methods=["GET"])
+def recipeDescription(recipe_id):
+    recipe = services.get_recipe_by_id(recipe_id, repo.repo_instance)
+
+    return render_template(
+        "recipeDescription.html",
+        title=f"Recipe: {recipe.name}",
+        recipe=recipe
+    )

@@ -1,4 +1,5 @@
 import csv
+import ast
 from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.author import Author
 from recipe.domainmodel.nutrition import Nutrition
@@ -23,18 +24,18 @@ class CSVReader:
                     recipeName = row[1]
                     author = Author(int(row[2]), row[3])
                     cook_time = int(row[4])
-                    prep_time = int(row[5])
+                    preparation_time = int(row[5])
                     date = parser.parse(row[7])
                     description = row[8]
-                    images = list(row[9])
+                    images = row[9].split()
                     category = Category(row[10])
-                    ingredient_quantity = list(row[11])
-                    ingredients = list(row[12])
+                    ingredient_quantity = row[11].split()
+                    ingredients = ast.literal_eval(row[12]) if row[12] else []
                     # Nutrition class needs to be implemented first
                     nutrition = Nutrition(line_count, float(row[13]), float(row[14]), float(row[15]), float(row[16]), float(row[17]), float(row[18]), float(row[19]), float(row[20]), float(row[21]))
                     servings = row[22]
                     recipe_yield = row[23]
-                    instructions = list(row[24])
-                    recipe = Recipe(recipeId, recipeName, author, cook_time, prep_time, date, description, images, category,
+                    instructions = ast.literal_eval(row[24]) if row[24] else []
+                    recipe = Recipe(recipeId, recipeName, author, cook_time, preparation_time, date, description, images, category,
                                     ingredient_quantity, ingredients,None, nutrition, servings, recipe_yield, instructions)
                     yield recipe

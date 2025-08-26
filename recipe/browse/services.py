@@ -17,3 +17,10 @@ def get_recipe(repo: AbstractRepository):
         }
         recipe_dicts.append(recipe_dict)
     return recipe_dicts
+
+def get_recipe_by_id(recipe_id: int, repo: AbstractRepository):
+    recipes = repo.get_recipe()
+    for recipe in recipes:
+        if recipe.id == recipe_id:
+            return recipe
+    return None

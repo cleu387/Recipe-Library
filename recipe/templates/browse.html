@@ -18,7 +18,7 @@
             {% for recipe in recipes %}
                 <tr>
                     <td>{{ recipe.id }}</td>
-                    <td>{{ recipe.name }}</td>
+                    <td><a href="{{ url_for('recipe_bp.recipeDescription', recipe_id=recipe.id) }}">{{ recipe.name }}</a></td>
                     <td>{{ recipe.author }}</td>
                 </tr>
             {% endfor %}
