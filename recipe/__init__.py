@@ -1,6 +1,8 @@
 """Initialize Flask app."""
 from datetime import datetime
 from flask import Flask, render_template
+import recipe.adapters.Repository as repo
+from recipe.adapters.MemoryRepository import MemoryRepository, populate
 
 # TODO: Access to the recipe should be implemented via the repository pattern and using blueprints, so this can not
 #  stay here!
@@ -23,13 +25,25 @@ def create_some_recipe():
 def create_app():
     """Construct the core application."""
 
-    # Create the Flask app object.
     app = Flask(__name__)
 
+
+    with app.app_context():
+        from .browse import browse
+        app.register_blueprint(browse.browse_blueprint)
+    repo.repo_instance = MemoryRepository()
+    populate(repo.repo_instance)
+
+
+    # Create the Flask app object
     @app.route('/')
     def home():
         some_recipe = create_some_recipe()
         # Use Jinja to customize a predefined html page rendering the layout for showing a single recipe.
         return render_template('recipeDescription.html', recipe=some_recipe)
+
+
+
+
 
     return app

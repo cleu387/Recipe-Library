@@ -2,6 +2,8 @@ import abc
 from typing import List
 from recipe.domainmodel.recipe import Recipe
 
+repo_instance = None
+
 class AbstractRepository(abc.ABC):
     @abc.abstractmethod
     def add_recipe(self, recipe:Recipe):
