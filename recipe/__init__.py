@@ -38,6 +38,10 @@ def create_app():
     # Create the Flask app object
     @app.route('/')
     def home():
+        return render_template('home.html')
+
+    @app.route('/recipe_portal')
+    def recipe_portal():
         some_recipe = create_some_recipe()
         # Use Jinja to customize a predefined html page rendering the layout for showing a single recipe.
         return render_template('recipeDescription.html', recipe=some_recipe)
