@@ -183,3 +183,38 @@ header {
     border: 1px solid #ccc;
     text-align: left;
 }
+
+.recipe-layout{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: nowrap;
+    max-width: 900px;
+    margin:0;
+}
+
+.recipe-image{
+    flex-shrink: 0;
+}
+
+.recipe-image img{
+    width:300px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    object-fit: cover;
+    display: block;
+}
+
+.recipe-info{
+    flex: 1 1 auto;
+    min-width: 250px;
+    text-align: left;
+}
+
+.recipe-info h1{
+    margin-top: 0;
+    margin-bottom: 10px;
+}

@@ -31,7 +31,6 @@ class CSVReader:
                     category = Category(row[10])
                     ingredient_quantity = row[11].split()
                     ingredients = ast.literal_eval(row[12]) if row[12] else []
-                    # Nutrition class needs to be implemented first
                     nutrition = Nutrition(line_count, float(row[13]), float(row[14]), float(row[15]), float(row[16]), float(row[17]), float(row[18]), float(row[19]), float(row[20]), float(row[21]))
                     servings = row[22]
                     recipe_yield = row[23]

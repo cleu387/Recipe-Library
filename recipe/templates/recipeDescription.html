@@ -7,12 +7,35 @@
 </head>
 {%  include 'navbar.html' %}
 <body>
+<div class="recipe-layout">
+    <div class="recipe-info">
     <h1>{{ recipe.name }}</h1>
     <p><strong>Author: </strong>{{ recipe.author.name }}</p>
     <p><strong>Description: </strong>{{ recipe.description }}</p>
     <p><strong>Category: </strong>{{ recipe.category.name }}</p>
     <p><strong>Preparation Time: </strong>{{ recipe.preparation_time }} minutes</p>
     <p><strong>Cooking Time: </strong>{{ recipe.cook_time }} minutes</p>
+    </div>
+
+    <div class="recipe-image">
+        <img src="{{ recipe.images[0] }}" alt="Image of {{ recipe.name }}">
+    </div>
+</div>
+
+
+    <h3>Nutritional Information (per serving)</h3>
+<table>
+    <tr><th>Calories</th><td>{{ recipe.nutrition.calories }}</td></tr>
+    <tr><th>Fat</th><td>{{ recipe.nutrition.fat }}g</td></tr>
+    <tr><th>Saturated Fat</th><td>{{ recipe.nutrition.saturated_fat }}g</td></tr>
+    <tr><th>Cholesterol</th><td>{{ recipe.nutrition.cholesterol }}mg</td></tr>
+    <tr><th>Sodium</th><td>{{ recipe.nutrition.sodium }}mg</td></tr>
+    <tr><th>Carbohydrates</th><td>{{ recipe.nutrition.carbohydrates }}g</td></tr>
+    <tr><th>Fiber</th><td>{{ recipe.nutrition.fiber }}g</td></tr>
+    <tr><th>Sugar</th><td>{{ recipe.nutrition.sugar }}g</td></tr>
+    <tr><th>Protein</th><td>{{ recipe.nutrition.protein }}g</td></tr>
+</table>
+
 
     <h3>Ingredients</h3>
     <ul>
