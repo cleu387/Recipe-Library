@@ -23,14 +23,17 @@
             <h1>Featured Recipes</h1>
             <div class = "line"></div>
         </div>
-        {% for recipe in recipes %}
-            <a href="{{ url_for('recipe_bp.recipeDescription', recipe_id=recipe.id) }}" class="recipe-card">
-                <img src="{{ recipe.images[0] }}" alt="{{ recipe.name }}">
-                <h3>{{ recipe.name }}</h3>
-                <p>{{ recipe.images[0] }}</p>
-                <p>{{ recipe.description }}</p>
-            </a>
-        {% endfor %}
+        <div class = "recipes-block">
+            {% for recipe in recipes %}
+                <a href="{{ url_for('recipe_bp.recipeDescription', recipe_id=recipe.id) }}" class="recipe-card">
+                    <img src="{{ recipe.images[0] }}" alt="{{ recipe.name }}">
+                    <div class = "ft-recipe-text-">
+                        <h3>{{ recipe.name }}</h3>
+                        <p>{{ recipe.description }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
     </section>
 </body>
 

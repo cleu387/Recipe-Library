@@ -27,7 +27,7 @@ class CSVReader:
                     preparation_time = int(row[5])
                     date = parser.parse(row[7])
                     description = row[8]
-                    images = row[9].split()
+                    images = ast.literal_eval(row[9]) if row[9] else []
                     category = Category(row[10])
                     ingredient_quantity = row[11].split()
                     ingredients = ast.literal_eval(row[12]) if row[12] else []

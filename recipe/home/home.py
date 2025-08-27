@@ -15,7 +15,6 @@ def home():
     recipes = [services.get_random_recipe_id(repo.repo_instance) for _ in range(2)]
 
 
-
     return render_template(
         "home.html",
         recipes=recipes)
