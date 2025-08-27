@@ -20,6 +20,16 @@ class MemoryRepository(AbstractRepository):
     def get_number_of_recipes(self) -> int:
         return len(self.__recipes)
 
+    def get_all_recipe_id(self) -> list[int]:
+        return [recipe.id for recipe in self.__recipes]
+
+    def get_recipe_by_id(self, recipe_id:int) -> int:
+        for recipe in self.__recipes:
+            if recipe.id == recipe_id:
+                return recipe
+        raise ValueError(f"Recipe with id {recipe_id} not found")
+
+
 def populate(repo: AbstractRepository):
     BASE_DIR = Path(__file__).resolve().parent
     filepath = BASE_DIR.parent / "adapters" / "datareader" / "data" / "recipes.csv"

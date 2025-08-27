@@ -19,3 +19,13 @@ class AbstractRepository(abc.ABC):
     def get_number_of_recipes(self) -> int:
         """ Returns the number of recipes """
         raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_all_recipe_id(self) -> list[int]:
+        """ Returns all recipes' id """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_recipe_by_id(self, recipe_id:int) -> Recipe:
+        """ Returns the recipe by id """
+        raise NotImplementedError
