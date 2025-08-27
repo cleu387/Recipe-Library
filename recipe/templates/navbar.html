@@ -4,14 +4,14 @@
     <header>
     <img src="../static/css/Logo.jpg" alt="Edwin" class="logo">
 
-    <div>
+    <div class = "header-title">
     <h1>Recipe Library</h1>
         <p class="copyright">&copy; Ben | Ryan | Josh</p>
     </div>
 
     <div class="sub-head">
         <ul>
-        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('home_bp.home') }}">Home</a></li>
         <li><a href="{{ url_for('recipe_bp.browse_recipes') }}">Browse</a></li>
         <li><a href="./login.html">Login</a></li>
         </ul>

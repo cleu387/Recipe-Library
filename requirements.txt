@@ -1,3 +1,4 @@
+python-dateutil
 pytest
 Flask==3.0.3
 Werkzeug==3.1.3
