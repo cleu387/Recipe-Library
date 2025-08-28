@@ -7,6 +7,9 @@
 </head>
 {%  include 'navbar.html' %}
 <body>
+<div class="recipe-image">
+        <img src="{{ recipe.images[0] }}" alt="Image of {{ recipe.name }}">
+    </div>
 <div class="recipe-layout">
     <div class="recipe-info">
     <h1>{{ recipe.name }}</h1>
@@ -15,10 +18,6 @@
     <p><strong>Category: </strong>{{ recipe.category.name }}</p>
     <p><strong>Preparation Time: </strong>{{ recipe.preparation_time }} minutes</p>
     <p><strong>Cooking Time: </strong>{{ recipe.cook_time }} minutes</p>
-    </div>
-
-    <div class="recipe-image">
-        <img src="{{ recipe.images[0] }}" alt="Image of {{ recipe.name }}">
     </div>
 </div>
 
