@@ -1,10 +1,9 @@
 import pytest
 import random
 import recipe.adapters.Repository as repo
-import recipe.browse.services as services
-import recipe.home.services as services
+import recipe.browse.services as browse_services
+import recipe.home.services as home_services
 from recipe.adapters.MemoryRepository import MemoryRepository, populate
-import recipe.adapters.Repository as repo
 from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.author import Author
 from recipe.domainmodel.category import Category
@@ -16,17 +15,14 @@ def repository():
     populate(repo.repo_instance)
     return repo.repo_instance
 
-@pytest.fixture
-def set_random_seed():
-    random.seed(30)
-    return random
-
 def test_get_number_of_recipes(repository):
     length = repository.get_number_of_recipes()
-    assert services.get_number_of_recipes(repository) == length
+    # Tests that the service layer returns the same result as the abstract repository
+    assert browse_services.get_number_of_recipes(repository) == length
 
 def test_get_recipe(repository):
-    recipe_dicts = services.get_recipe(repository)
+    recipe_dicts = browse_services.get_recipe(repository)
+    # Tests that the return value exists and has the right parameters
     assert recipe_dicts is not None
     assert isinstance(recipe_dicts, list)
     recipe = recipe_dicts[0]
@@ -45,7 +41,7 @@ def test_get_recipe_by_id_found():
 
     recipe = TestRecipe(38,"Test Recipe")
     mem_repo._recipes = [recipe]
-    result = services.get_recipe_by_id(38, mem_repo)
+    result = browse_services.get_recipe_by_id(38, mem_repo)
 
     assert result is None
     assert recipe.name == "Test Recipe"
@@ -54,17 +50,23 @@ def test_get_recipe_by_id_found():
 def test_get_recipe_by_id_not_found():
     mem_repo = MemoryRepository()
     mem_repo._recipes = []
-    result = services.get_recipe_by_id(1, mem_repo)
+    result = browse_services.get_recipe_by_id(1, mem_repo)
     assert result is None
 
-def test_get_random_recipe(repository, set_random_seed):
-    all_id = repository.get_all_recipe_id()
-    random_id = random.choice(all_id)
+def test_get_random_recipe(repository):
+    # Tests that get random recipe does in fact return a random recipe
+    import random
+    recipes = repository.get_recipe()
+    random.seed(42)
+    random_recipe = home_services.get_random_recipe(repository)
+    # Always returns recipe at index 456
+    assert random_recipe is not None
+    assert isinstance(random_recipe, Recipe)
 
-    recipe = repository.get_recipe_by_id(random_id)
+    assert random_recipe == recipes[456]
 
-    assert recipe is not None
-    assert recipe.id == random_id
+
+
 
 
 
