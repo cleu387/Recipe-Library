@@ -30,8 +30,29 @@ def test_get_recipe(repository):
     assert isinstance(recipe["name"], str)
     assert isinstance(recipe["author"], str)
 
+def test_get_recipe_by_id_found():
+    mem_repo = MemoryRepository()
+    class TestRecipe:
+        def __init__(self,id,name):
+            self.id = id
+            self.name = name
+
+    recipe = TestRecipe(38,"Test Recipe")
+    mem_repo._recipes = [recipe]
+    result = services.get_recipe_by_id(38, mem_repo)
+
+    assert result is None
+    assert recipe.name == "Test Recipe"
+    assert recipe.id == 38
+
+def test_get_recipe_by_id_not_found():
+    mem_repo = MemoryRepository()
+    mem_repo._recipes = []
+    result = services.get_recipe_by_id(1, mem_repo)
+    assert result is None
 def test_get_random_recipe(repository):
     recipe_dicts = services.get_recipe(repository)
+
 
 
 
