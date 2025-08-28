@@ -1,3 +1,4 @@
+#Test recipe loads successfully
 def test_view_recipe(client):
     response = client.get("/recipe/38")
     assert response.status_code == 200
@@ -8,7 +9,7 @@ def test_view_recipe(client):
     assert b"Ingredients" in response.data
     assert b"Instructions" in response.data
 
-
+#Test recipe page displays relevant image and nutritional information
 def test_view_recipe_img_and_nutrition(client):
     response = client.get("/recipe/38")
     assert b"<img" in response.data

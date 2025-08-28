@@ -31,7 +31,7 @@ def test_get_recipe(repository):
     assert isinstance(recipe["id"], int)
     assert isinstance(recipe["name"], str)
     assert isinstance(recipe["author"], str)
-
+#Test for an ID that does link to a recipe
 def test_get_recipe_by_id_found():
     mem_repo = MemoryRepository()
     class TestRecipe:
@@ -46,7 +46,7 @@ def test_get_recipe_by_id_found():
     assert result is None
     assert recipe.name == "Test Recipe"
     assert recipe.id == 38
-
+#Test for an ID that does not link to a recipe
 def test_get_recipe_by_id_not_found():
     mem_repo = MemoryRepository()
     mem_repo._recipes = []

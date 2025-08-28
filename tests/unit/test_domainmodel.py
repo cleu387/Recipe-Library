@@ -233,7 +233,7 @@ def test_author_set_recipe(my_author):
 def test_author_set_recipe_invalid_type(my_author):
     with pytest.raises(TypeError):
         my_author.add_recipe("not a recipe")
-
+#Initialise a test Nutrition Object
 @pytest.fixture
 def nutrition_sample():
     return Nutrition(
@@ -248,6 +248,7 @@ def nutrition_sample():
         sugar=12,
         protein=3,
     )
+#Tests for correct nutrition values
 def test_properties_nutrition(nutrition_sample):
     assert nutrition_sample.id == 1
     assert nutrition_sample.calories == 200
@@ -259,25 +260,25 @@ def test_properties_nutrition(nutrition_sample):
     assert nutrition_sample.fiber == 5
     assert nutrition_sample.sugar == 12
     assert nutrition_sample.protein == 3
-
+#Tests that the __repr__ output of Nutrition object includes key nutrional information
 def test_repr_nutrition(nutrition_sample):
     repr_str = repr(nutrition_sample)
     assert "Calories: 200" in repr_str
     assert "Protein: 3" in repr_str
-
+#Tests if the values of two recipes are and are not equal
 def test_equality_nutrition():
     n1 = Nutrition(1,100,5,2,8,20,10,3,2,5)
     n2 = Nutrition(2,100,5,2,8,20,10,3,2,5)
     n3 = Nutrition(3,2,3,4,5,6,7,8,9,10)
     assert n1 == n2
     assert n1 != n3
-
+#Tests if the Nutrition values in one recipe are lower than the other
 def test_less_than_nutrition():
     low_cal = Nutrition(1,100,5,2,10,100,20,2,8,6)
     high_cal = Nutrition(2,500,10,5,20,200,32,11,40,22)
     assert low_cal < high_cal
     assert not high_cal < low_cal
-
+#Tests if Nutrition object with the same ID have the same hash and objects with differing IDs have different hashes
 def test_hash_nutrition():
     n1 = Nutrition(1,100,5,2,8,20,10,3,2,5)
     n2 = Nutrition(1,200,3,4,55,22,11,33,22,11)
@@ -285,14 +286,14 @@ def test_hash_nutrition():
     assert hash(n1) == hash(n2)
     assert hash(n1) != hash(n3)
 
-
+#Mock class to for review and favourite
 class MockUser:
     def __init__(self, user_id):
         self.user_id = user_id
 
     def __repr__(self):
         return f"User{self.user_id}"
-
+#Mock class to for review and favourite
 class MockRecipe:
     def __init__(self, recipe_id, recipe_name):
         self.recipe_id = recipe_id
@@ -306,7 +307,7 @@ class MockRecipe:
 
     def __repr__(self) -> str:
         return f"Recipe{self.recipe_id}"
-
+#Initialise a test Favourite object
 def test_favourite_initialization():
     user = MockUser("Eve")
     fav = Favourite(favourite_id= 1, user=user)
@@ -314,14 +315,14 @@ def test_favourite_initialization():
     assert fav.id == 1
     assert fav.user == user
     assert fav.recipes == []
-
+#Test ability to add recipe to Favourite
 def test_add_recipe_favourite():
     user = MockUser("Bob")
     recipe = MockRecipe(2, "Pizza")
     fav = Favourite(favourite_id= 1, user=user)
     fav.add_recipe(recipe)
     assert recipe in fav.recipes
-
+#Test cannot add duplicate recipe to favourite
 def test_add_duplicate_recipe_favourite():
     user = MockUser("Bob")
     recipe = MockRecipe(101, "Pizza")
@@ -331,7 +332,7 @@ def test_add_duplicate_recipe_favourite():
 
     assert fav.recipes.count(recipe) == 1
 
-
+#Test remove recipe from Favourite
 def test_remove_recipe_favourite():
     user = MockUser("Dave")
     r1 = MockRecipe(101, "Chip")
@@ -340,7 +341,7 @@ def test_remove_recipe_favourite():
     fav.remove_recipe(r1)
     assert r1 not in fav.recipes
     assert r2 in fav.recipes
-
+#Test cannot remove nonexistent recipe from Favourite
 def test_remove_nonexistent_recipe_favourite():
     user = MockUser("Bob2")
     r1 = MockRecipe(301, "Brick")
@@ -348,20 +349,20 @@ def test_remove_nonexistent_recipe_favourite():
     fav = Favourite(favourite_id= 4, user=user, recipes=[r1])
     fav.remove_recipe(r2)
     assert fav.recipes == [r1]
-
+#Test if output of __repr__ object includes a User and Recipe
 def test_repr_favourite():
     user = MockUser("BobAgain")
     recipe = MockRecipe(402, "Burger")
     fav = Favourite(favourite_id= 5, user=user, recipes=[recipe])
     assert repr(fav) == f"{user}: [{recipe}]"
-
+#Test if two Favourite objects have the same ID then their hash values are the same
 def test_hash_favourite():
     user = MockUser("Bob")
     fav1 = Favourite(favourite_id= 6, user=user)
     fav2 = Favourite(favourite_id= 6, user=user)
     assert hash(fav1) == hash(fav2)
 
-
+#Initialise a test Review object
 def test_review_initialization():
     user = MockUser("Bob")
     recipe = MockRecipe(1, "Burger")
@@ -373,7 +374,7 @@ def test_review_initialization():
     assert review.rating == 5
     assert review.review_text == "edible"
     assert isinstance(review.date, datetime)
-
+#Test if a Review object correctly stores the date
 def test_review_custom_data():
     user = MockUser("Bob")
     recipe = MockRecipe(2, "Sushi")
@@ -381,35 +382,35 @@ def test_review_custom_data():
     review = Review(2, user, recipe,4,"edible", created_date=custom_date)
 
     assert review.date == custom_date
-
+#Test setting a valid rating updates the Review object
 def test_review_rating_setter_valid():
     user = MockUser("Bob")
     recipe = MockRecipe(3, "Burger")
     review = Review(3, user, recipe,5,"edible")
     review.rating = 5
     assert review.rating == 5
-
+#Test that setting an invalid values raises a ValueError
 def test_review_rating_setter_invalid():
     user = MockUser("Bob")
     recipe = MockRecipe(4, "Burger")
     review = Review(4, user, recipe,5,"edible")
     with pytest.raises(ValueError):
         review.rating = 6
-
+#Test that setting text correctly updates Review object correctly
 def test_review_text_setter():
     user = MockUser("Bob")
     recipe = MockRecipe(6, "Burger")
     review = Review(6, user, recipe,5,"ok")
     review.review_text = "ok"
     assert review.review_text == "ok"
-
+#Test __repr__ method of Review returns the expected string format
 def test_review_repr():
     user = MockUser("Bob")
     recipe = MockRecipe(7, "Burger")
     review = Review(7, user, recipe,9,"wow")
     expected_repr = f"{user}: {recipe}: 9 - wow"
     assert repr(review) == expected_repr
-
+#Test that Review objects with the same ID produce the same hash value
 def test_review_hash():
     user = MockUser("Bob")
     recipe = MockRecipe(8, "Burger")
