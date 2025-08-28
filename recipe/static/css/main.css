@@ -194,12 +194,14 @@ header {
 
 
 
+.recipe-image{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 460px;
+}
 .recipe-image img{
-    width:50%;
-    max-width: 100%;
-    height: 400px;
-    display: block;
-    margin: 0 auto;
+    height: auto;
 }
 
 .recipe-info{
