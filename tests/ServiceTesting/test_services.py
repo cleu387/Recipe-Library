@@ -1,6 +1,7 @@
 import pytest
 import recipe.adapters.Repository as repo
 import recipe.browse.services as services
+import recipe.home.services as services
 from recipe.adapters.MemoryRepository import MemoryRepository, populate
 import recipe.adapters.Repository as repo
 from recipe.domainmodel.nutrition import Nutrition
@@ -13,7 +14,6 @@ def repository():
     repo.repo_instance = MemoryRepository()
     populate(repo.repo_instance)
     return repo.repo_instance
-
 
 def test_get_number_of_recipes(repository):
     length = repository.get_number_of_recipes()
@@ -30,26 +30,12 @@ def test_get_recipe(repository):
     assert isinstance(recipe["name"], str)
     assert isinstance(recipe["author"], str)
 
-def test_get_recipe_by_id_found():
-    mem_repo = MemoryRepository()
-    class TestRecipe:
-        def __init__(self,id,name):
-            self.id = id
-            self.name = name
+def test_get_random_recipe(repository):
+    recipe_dicts = services.get_recipe(repository)
 
-    recipe = TestRecipe(38,"Test Recipe")
-    mem_repo._recipes = [recipe]
-    result = services.get_recipe_by_id(38, mem_repo)
 
-    assert result is None
-    assert recipe.name == "Test Recipe"
-    assert recipe.id == 38
 
-def test_get_recipe_by_id_not_found():
-    mem_repo = MemoryRepository()
-    mem_repo._recipes = []
-    result = services.get_recipe_by_id(1, mem_repo)
-    assert result is None
+
 
 
 

@@ -9,7 +9,8 @@
 <body>
 <div class="recipe-image">
         <img src="{{ recipe.images[0] }}" alt="Image of {{ recipe.name }}">
-    </div>
+</div>
+<div class = "whole-recipe-layout">
 <div class="recipe-layout">
     <div class="recipe-info">
     <h1>{{ recipe.name }}</h1>
@@ -51,5 +52,6 @@
     </ol>
 
     <a href="{{ url_for('recipe_bp.browse_recipes') }}">Back To Browse</a>
+</div>
 </body>
 </html>
