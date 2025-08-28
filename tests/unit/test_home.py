@@ -9,8 +9,19 @@ populate(repo.repo_instance)
 
 
 def test_home(client):
+    # Tests that the home page exists and has the right contents on it
     response = client.get("/")
     assert response.status_code == 200
+    recipes = repo.repo_instance.get_recipe()
     data = response.data.decode("utf-8")
-    assert b"Home" in response.data
-    assert b"Welcome to the Recipe Library" in response.data
+    assert "Home" in data
+    assert "Welcome to the Recipe Library" in data
+
+    # Test if there are 2 featured recipes on the home page
+    found = 0
+    for recipe in recipes:
+        if recipe.name in data:
+            found += 1
+        if found >= 2:
+            break
+    assert found == 2
