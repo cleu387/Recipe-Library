@@ -30,10 +30,6 @@ header {
     transform: translateX(-50%);
 }
 
-.sub-head{
-
-}
-
 .nav-sep{
     width: 3px;
     height: 40px;
@@ -43,11 +39,15 @@ header {
 .sub-head li a{
     text-decoration: none;
     color: black;
+    display: block;
+    text-align: center;
+    padding: 10px 30px;
 }
 
 .sub-head li{
-    padding: 10px 30px;
+    padding: 0px;
     border-radius: 5px;
+    cursor: pointer;
     transition: transform 0.3s ease;
 }
 
