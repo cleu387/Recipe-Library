@@ -1,4 +1,5 @@
 import pytest
+import random
 import recipe.adapters.Repository as repo
 import recipe.browse.services as services
 import recipe.home.services as services
@@ -14,6 +15,11 @@ def repository():
     repo.repo_instance = MemoryRepository()
     populate(repo.repo_instance)
     return repo.repo_instance
+
+@pytest.fixture
+def set_random_seed():
+    random.seed(30)
+    return random
 
 def test_get_number_of_recipes(repository):
     length = repository.get_number_of_recipes()
@@ -50,8 +56,15 @@ def test_get_recipe_by_id_not_found():
     mem_repo._recipes = []
     result = services.get_recipe_by_id(1, mem_repo)
     assert result is None
-def test_get_random_recipe(repository):
-    recipe_dicts = services.get_recipe(repository)
+
+def test_get_random_recipe(repository, set_random_seed):
+    all_id = repository.get_all_recipe_id()
+    random_id = random.choice(all_id)
+
+    recipe = repository.get_recipe_by_id(random_id)
+
+    assert recipe is not None
+    assert recipe.id == random_id
 
 
 
