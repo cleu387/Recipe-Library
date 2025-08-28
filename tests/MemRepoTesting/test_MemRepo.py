@@ -1,7 +1,7 @@
 import pytest
 import os
 from recipe.adapters.Repository import AbstractRepository
-from recipe.adapters.MemoryRepository import MemoryRepository
+from recipe.adapters.MemoryRepository import MemoryRepository, populate
 from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.author import Author
 from recipe.domainmodel.category import Category
@@ -10,14 +10,15 @@ from recipe.domainmodel.recipe import Recipe
 @pytest.fixture
 def memory_repository():
     mem_repo = MemoryRepository()
+    populate(mem_repo)
     return mem_repo
 
 def test_get_recipe(memory_repository):
     data = memory_repository.get_recipe()
     assert data is not None
     assert isinstance(data, list)
-    assert isinstance(data[0], Recipe)
     recipe = data[0]
+    assert isinstance(recipe, Recipe)
     assert recipe.name == "Low-Fat Berry Blue Frozen Dessert"
     assert isinstance(recipe.author, Author)
     assert isinstance(recipe.category, Category)
@@ -36,7 +37,7 @@ def test_add_recipe(memory_repository):
     assert isinstance(test_data, list)
     assert isinstance(test_data[0], Recipe)
     assert len(test_data) == length + 1
-    assert test_data[-1] == temp_recipe
+    assert test_data[0] == temp_recipe
 
 
 def test_get_number_of_recipes(memory_repository):
