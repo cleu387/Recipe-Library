@@ -30,7 +30,6 @@ def test_get_recipe(repository):
     assert isinstance(recipe["name"], str)
     assert isinstance(recipe["author"], str)
 
-def test
 
 
 
