@@ -14,6 +14,7 @@ def memory_repository():
     return mem_repo
 
 def test_get_recipe(memory_repository):
+    # Tests the get_recipe function to confirm that it correctly returns all the recipes in the memory repo
     data = memory_repository.get_recipe()
     assert data is not None
     assert isinstance(data, list)
@@ -25,6 +26,7 @@ def test_get_recipe(memory_repository):
     assert isinstance(recipe.nutrition, Nutrition)
 
 def test_add_recipe(memory_repository):
+    # Tests the add_recipe function to confirm that it correctly adds a recipe to the memory repo
     data = memory_repository.get_recipe()
     length = len(data)
     assert data is not None
@@ -39,6 +41,7 @@ def test_add_recipe(memory_repository):
 
 
 def test_get_number_of_recipes(memory_repository):
+    # Tests the get_number_of_recipes function to confirm it returns the correct number of recipes
     data = memory_repository.get_recipe()
     assert data is not None
     print(memory_repository.get_number_of_recipes())
