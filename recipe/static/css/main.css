@@ -157,20 +157,7 @@ header {
     object-fit: cover;
 }
 
-
 /* Browse page CSS */
-.description p i {
-    font-family: 'Gill Sans';
-    font-weight: bold;
-    font-size: 18px;
-    text-transform: uppercase;
-    color:darkslateblue
-    }
-
-.description img {
-        vertical-align: top;
-    }
-
 .recipe-table {
     margin: 20px auto;
     border-collapse: collapse;
@@ -184,6 +171,7 @@ header {
     text-align: left;
 }
 
+/* Recipe description CSS */
 .recipe-layout{
     display: flex;
     justify-content: flex-start;
@@ -191,8 +179,6 @@ header {
     max-width: 900px;
     margin:0;
 }
-
-
 
 .recipe-image{
     display: flex;
