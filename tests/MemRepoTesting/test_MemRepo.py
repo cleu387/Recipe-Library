@@ -24,8 +24,6 @@ def test_get_recipe(memory_repository):
     assert isinstance(recipe.category, Category)
     assert isinstance(recipe.nutrition, Nutrition)
 
-
-
 def test_add_recipe(memory_repository):
     data = memory_repository.get_recipe()
     length = len(data)
@@ -46,4 +44,17 @@ def test_get_number_of_recipes(memory_repository):
     print(memory_repository.get_number_of_recipes())
     assert memory_repository.get_number_of_recipes() == len(data)
 
+def test_get_all_recipe_id(memory_repository):
+    data = memory_repository.get_recipe()
+    assert data is not None
+    assert memory_repository.get_all_recipe_id() == [data.id for data in data]
+
+def test_get_recipe_by_id(memory_repository):
+    data = memory_repository.get_recipe()
+    assert data is not None
+    test_recipe = data[0]
+    test_id = test_recipe.id
+
+    print(memory_repository.get_recipe_by_id(test_id))
+    assert memory_repository.get_recipe_by_id(test_id) == test_recipe
 
