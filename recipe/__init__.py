@@ -17,8 +17,11 @@ def create_app():
         from .browse import browse
         app.register_blueprint(browse.browse_blueprint)
 
-        from.home import home
+        from .home import home
         app.register_blueprint(home.home_blueprint)
+
+        from .authentication import authentication
+        app.register_blueprint(authentication.authentication_blueprint)
 
     repo.repo_instance = MemoryRepository()
     populate(repo.repo_instance)
