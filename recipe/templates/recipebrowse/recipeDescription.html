@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }} </title>
-    <link rel="stylesheet" href="../static/css/main.css"/>
-</head>
-{%  include 'navbar.html' %}
-<body>
+{% extends 'layout.html' %}
+{% block title %}{{ super() }} | {{ title }}{%  endblock %}
+
+
+{% block content %}
 <div class="recipe-image">
         <img src="{{ recipe.images[0] }}" alt="Image of {{ recipe.name }}">
 </div>
@@ -53,5 +49,4 @@
 
     <a href="{{ url_for('recipe_bp.browse_recipes') }}">Back To Browse</a>
 </div>
-</body>
-</html>
+{% endblock %}

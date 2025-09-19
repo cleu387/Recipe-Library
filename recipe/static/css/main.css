@@ -45,7 +45,7 @@ header {
 }
 
 .sub-head li{
-    padding: 0px;
+    padding: 0;
     border-radius: 5px;
     cursor: pointer;
     transition: transform 0.3s ease;
@@ -155,6 +155,53 @@ header {
     width: 100%;
     height: 400px;
     object-fit: cover;
+}
+
+/* Login page CSS */
+.login{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.login-img{
+    flex: 1;
+    background: url("https://img.freepik.com/premium-photo/grilled-octopus-with-vegetables-white-plate-white-tablecloth_207126-8467.jpg") no-repeat center center;
+    background-size: cover;
+}
+
+.login-box {
+    background-color: #fff;
+    border-radius: 25px;
+    border: 2px solid #114e91;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.text {
+    text-align: center;
+}
+
+input[type="email"],
+input[type="password"] {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+input[type="submit"] {
+    width: 90%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
 }
 
 /* Browse page CSS */

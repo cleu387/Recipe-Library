@@ -18,7 +18,7 @@ def browse_recipes():
     total_pages = (num_recipes + per_page - 1) // per_page
 
     return render_template(
-        "browse.html",
+        "browse/browse.html",
         title=f"Browse recipes | CS235 Recipe Portal",
         heading="Browse recipes",
         recipes=recipes_on_page,
@@ -32,7 +32,7 @@ def browse_recipes():
 def recipeDescription(recipe_id):
     recipe = services.get_recipe_by_id(recipe_id, repo.repo_instance)
     return render_template(
-        "recipeDescription.html",
+        "recipebrowse/recipeDescription.html",
         title=f"Recipe: {recipe.name}",
         recipe=recipe
     )

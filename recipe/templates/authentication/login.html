@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block title %}{{ super() }} | Login{%  endblock %}
+
+{% block content %}
+    <div class="login">
+        <div class="login-img"></div>
+        <div class="login-box">
+            <h2>Login</h2>
+            <form action="/" method="POST">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required><br><br>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required><br><br>
+
+                <div class="text">
+                    <input type="submit" value="Login">
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
