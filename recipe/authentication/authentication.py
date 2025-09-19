@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, session, reques
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Length, ValidationError
+from wtforms.validators import DataRequired, Length, ValidationError, EqualTo
 
 from password_validator import PasswordValidator
 
@@ -27,12 +27,15 @@ def register():
         except services.NameNotUniqueException:
             username_not_unique = 'Your user name is already taken - please supply another'
 
+    # For a GET or a failed POST request, return the Registration Web page.
     return render_template(
-        'authentication/register .html',
+        'authentication/register.html',
         title='Register',
         form=form,
         user_name_error_message=username_not_unique,
+        handler_url=url_for('authentication_bp.register')
     )
+
 
 @authentication_blueprint.route("/login", methods=["GET", "POST"])
 def login():
@@ -84,8 +87,9 @@ class PasswordValid:
             raise ValidationError(self.message)
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', [DataRequired(message='Your user name is required'),Length(min=3, message='Your user name is too short')])
+    username = StringField('Username', [DataRequired(message='Your username is required'),Length(min=3, message='Your username is too short')])
     password = PasswordField('Password', [DataRequired(message='Your password is required'), PasswordValid()])
+    verify_password = PasswordField('Verify Password', [DataRequired(message='Please confirm your password'), EqualTo('password', message='Passwords must match')])
     submit = SubmitField('Register')
 
 

@@ -159,10 +159,10 @@ header{
 
 /* Authentication CSS */
 .auth{
-    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: calc(100vh - 150px);
 }
 
 .auth-container{
@@ -191,12 +191,12 @@ header{
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-.login-box label{
+label{
     font-size: larger;
 }
 
-.login-box input[type="text"],
-.login-box input[type="password"]{
+input[type="text"],
+input[type="password"]{
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
@@ -218,14 +218,14 @@ header{
     text-decoration: underline;
 }
 
-.login-error{
+.error{
     position: absolute;
     color: red;
     margin-top: 10px;
 }
 
 input[type="submit"] {
-    margin-top: 40px;
+    margin-top: 50px;
     width: 100%;
     padding: 15px;
     box-sizing: border-box;
@@ -235,7 +235,7 @@ input[type="submit"] {
     transition: transform 0.5s ease;
 }
 
-.login-box input[type="submit"]:hover {
+input[type="submit"]:hover {
     transform: translateY(-1px) translateX(1px);
     background-color: #f2bfc0;
     box-shadow: 2px 4px 4px rgba(0,0,0,0.1);
@@ -256,6 +256,21 @@ input[type="submit"] {
 
 .register-button:hover{
     text-decoration: underline;
+}
+
+.register-box {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    height: 400px;
+    background-color: #FCFCFC;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.login-box label{
+    font-size: larger;
 }
 
 /* Browse page CSS */

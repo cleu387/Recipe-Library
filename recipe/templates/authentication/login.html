@@ -21,7 +21,7 @@
                     <a href="{{ url_for('home_bp.home') }}">Forgot Password?</a>
                 </div>
                 {% if authentication_fail_message%}
-                    <a class="login-error">{{ authentication_fail_message }}</a>
+                    <a class="error">{{ authentication_fail_message }}</a>
                 {% endif %}
         </div>
         {{ form.submit }}
