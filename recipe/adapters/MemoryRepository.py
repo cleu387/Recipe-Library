@@ -2,6 +2,7 @@ from bisect import insort_left
 from typing import List
 
 from recipe.domainmodel.recipe import Recipe
+from recipe.domainmodel.user import User
 from recipe.adapters.Repository import AbstractRepository
 from pathlib import Path
 from recipe.adapters.datareader.CSVReader import CSVReader
@@ -9,6 +10,7 @@ from recipe.adapters.datareader.CSVReader import CSVReader
 class MemoryRepository(AbstractRepository):
     def __init__(self):
         self.__recipes = list()
+        self.__users = list()
 
     def add_recipe(self, recipe:Recipe):
         if isinstance(recipe, Recipe):
@@ -28,6 +30,12 @@ class MemoryRepository(AbstractRepository):
             if recipe.id == recipe_id:
                 return recipe
         raise ValueError(f"Recipe with id {recipe_id} not found")
+
+    def add_user(self, user: User):
+        self.__users.append(user)
+
+    def get_user(self, username) -> User:
+        return next((user for user in self.__users if user.username == username), None)
 
 
 def populate(repo: AbstractRepository):
