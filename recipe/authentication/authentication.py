@@ -11,7 +11,7 @@ import recipe.adapters.Repository as repo
 
 authentication_blueprint = Blueprint("authentication_bp", __name__, url_prefix='/authentication')
 
-"""@authentication_blueprint.route('/register', methods=['GET', 'POST'])
+@authentication_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
     username_not_unique = None
@@ -25,20 +25,19 @@ def register():
             # All is well, redirect the user to the login page.
             return redirect(url_for('authentication_bp.login'))
         except services.NameNotUniqueException:
-            user_name_not_unique = 'Your user name is already taken - please supply another'
+            username_not_unique = 'Your user name is already taken - please supply another'
 
     return render_template(
-        'authentication/login.html',
+        'authentication/register .html',
         title='Register',
         form=form,
-        user_name_error_message=user_name_not_unique,
-    )"""
+        user_name_error_message=username_not_unique,
+    )
 
-@authentication_blueprint.route("/login", methods=["GET"])
+@authentication_blueprint.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
-    username_not_recognised = None
-    password_does_not_match_user_name = None
+    authentication_failed = None
 
     if form.validate_on_submit():
         # Successful POST, i.e. the username and password have passed validation checking.
@@ -54,20 +53,15 @@ def login():
             session['username'] = user['username']
             return redirect(url_for('home_bp.home'))
 
-        except services.UnknownUserException:
-            # Username not known to the system, set a suitable error message.
-            username_not_recognised = 'Username not recognised - please supply another'
-
-        except services.AuthenticationException:
+        except services.InvalidException:
             # Authentication failed, set a suitable error message.
-            password_does_not_match_user_name = 'Password does not match supplied user name - please check and try again'
+            authentication_failed = 'Username or Password is incorrect - please try again.'
 
     # For a GET or a failed POST, return the Login Web page.
     return render_template(
         'authentication/login.html',
         title='Login',
-        user_name_error_message=username_not_recognised,
-        password_error_message=password_does_not_match_user_name,
+        authentication_fail_message = authentication_failed,
         form=form,
     )
 

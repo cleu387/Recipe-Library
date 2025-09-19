@@ -1,27 +1,37 @@
 {% extends 'layout.html' %}
-{% block title %}{{ super() }} | Login{%  endblock %}
+{% block title %}{{ super() }} | Authentication{%  endblock %}
 
 {% block content %}
-<div class="login">
-    <div class="login-img"></div>
+<div class="auth">
+    <div class="auth-img"></div>
+    <div class="auth-container">
+
     <div class="login-box">
-        <h1 class>{{ title }}</h1>
+        <h1 class="title">{{ title }}</h1>
         <form method="POST" action="{{ handler_url }}">
             {{ form.csrf_token }}
 
-             <div class="form-field">{{ form.username.label }} {{ form.username }}
-            {% if form.username.errors or username_error_message is not none %}
-
-            {% endif %}
+             <div class="form-field">
+                {{ form.username.label }} {{ form.username }}
             </div>
 
-            <div class="form-field">{{ form.password.label }} {{ form.password }}
-            {% if form.password.errors or password_error_message is not none %}
-
-            {% endif %}
+            <div class="form-field">
+                {{ form.password.label }} {{ form.password }}
+                <div class="forgot-password">
+                    <a href="{{ url_for('home_bp.home') }}">Forgot Password?</a>
+                </div>
+                {% if authentication_fail_message%}
+                    <a class="login-error">{{ authentication_fail_message }}</a>
+                {% endif %}
         </div>
         {{ form.submit }}
         </form>
+
+        <div class="register">
+            <a>Don't have an account?<br></a>
+            <a href="{{ url_for('authentication_bp.register') }}" class="register-button">Register here</a>
+        </div>
+    </div>
     </div>
 </div>
 {% endblock %}

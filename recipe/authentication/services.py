@@ -7,10 +7,7 @@ from recipe.domainmodel.user import User
 class NameNotUniqueException(Exception):
     pass
 
-class UnknownUserException(Exception):
-    pass
-
-class AuthenticationException(Exception):
+class InvalidException(Exception):
     pass
 
 def add_user(username: str, password: str, repo: AbstractRepository):
@@ -29,7 +26,7 @@ def add_user(username: str, password: str, repo: AbstractRepository):
 def get_user(username: str, repo: AbstractRepository):
     user = repo.get_user(username)
     if user is None:
-        raise UnknownUserException
+        raise InvalidException
 
     return user_to_dict(user)
 
@@ -37,10 +34,10 @@ def authenticate_user(username: str, password: str, repo: AbstractRepository):
     authenticated = False
 
     current_user = repo.get_user(username)
-    if User is not None:
+    if current_user is not None:
         authenticated = check_password_hash(current_user.password, password)
     if not authenticated:
-        raise AuthenticationException
+        raise InvalidException
 
 # ===================================================
 # Functions to convert model entities to dictionaries

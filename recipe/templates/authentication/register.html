@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% block title %}{{ super() }} | Authentication{%  endblock %}
+
+{% block content %}
+<div class="auth">
+    <div class="auth-img"></div>
+    <div class="auth-container">
+
+    <div class="register-box">
+        <h1 class="title">{{ title }}</h1>
+        <form method="POST" action="{{ handler_url }}">
+            {{ form.csrf_token }}
+
+             <div class="form-field">
+                {{ form.username.label }} {{ form.username }}
+                {% if form.username.errors or username_error_message is not none %}
+
+                {% endif %}
+            </div>
+
+            <div class="form-field">
+                {{ form.password.label }} {{ form.password }}
+                {{ form.password.label }} {{ form.password }}
+                {% if form.password.errors or password_error_message is not none %}
+
+                {% endif %}
+        </div>
+        {{ form.submit }}
+        </form>
+
+        
+    </div>
+    </div>
+</div>
+{% endblock %}

@@ -157,15 +157,22 @@ header{
     object-fit: cover;
 }
 
-/* Login page CSS */
-.login{
+/* Authentication CSS */
+.auth{
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.login-img{
+.auth-container{
+    width:50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-img{
     height: 100%;
     width: 50%;
     flex: 1;
@@ -174,34 +181,81 @@ header{
 }
 
 .login-box {
-    flex: 1;
     display: flex;
-    justify-content: left;
-    align-content: center;
+    flex-direction: column;
+    width: 500px;
+    height: 400px;
+    background-color: #FCFCFC;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-.text {
-    text-align: center;
+.login-box label{
+    font-size: larger;
 }
 
-input[type="email"],
-input[type="password"] {
-    width: 90%;
+.login-box input[type="text"],
+.login-box input[type="password"]{
+    width: 100%;
     padding: 10px;
+    box-sizing: border-box;
     margin-bottom: 10px;
 }
 
-input[type="submit"] {
-    width: 90%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    cursor: pointer;
+.login-box input[type="password"]{
+    margin-bottom: 2px;
 }
 
-input[type="submit"]:hover {
-    background-color: #45a049;
+.forgot-password a{
+    display: flex;
+    justify-content: right;
+    color: gray;
+    text-decoration: none;
+}
+
+.forgot-password a:hover{
+    text-decoration: underline;
+}
+
+.login-error{
+    position: absolute;
+    color: red;
+    margin-top: 10px;
+}
+
+input[type="submit"] {
+    margin-top: 40px;
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    background-color: #F5BABB;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.5s ease;
+}
+
+.login-box input[type="submit"]:hover {
+    transform: translateY(-1px) translateX(1px);
+    background-color: #f2bfc0;
+    box-shadow: 2px 4px 4px rgba(0,0,0,0.1);
+}
+
+.register{
+    margin-top: auto;
+    justify-content: flex-end;
+}
+
+.register a{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: gray;
+    text-decoration: none;
+}
+
+.register-button:hover{
+    text-decoration: underline;
 }
 
 /* Browse page CSS */
