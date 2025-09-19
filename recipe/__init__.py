@@ -11,7 +11,6 @@ def create_app():
     """Construct the core application."""
 
     app = Flask(__name__)
-    app.secret_key = 'haha'
 
     with app.app_context():
         from .browse import browse
