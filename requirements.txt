@@ -1,3 +1,6 @@
+password-validator
+wtforms
+flask-wtf
 python-dateutil
 pytest
 Flask==3.0.3
