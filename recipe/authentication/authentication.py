@@ -68,6 +68,10 @@ def login():
         form=form,
     )
 
+@authentication_blueprint.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('home_bp.home'))
 
 class PasswordValid:
     def __init__(self, message=None):
