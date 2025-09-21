@@ -13,11 +13,11 @@
 
                 {{ form.username.label }} {{ form.username }}
 
-                {{ form.password.label }} {{ form.password(id="password", pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}", title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters", required = True)  }}
+                {{ form.password.label }} {{ form.password(id="password", pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}", title="Must contain at least one number and one uppercase and lowercase letter, and minimum of 8 characters", required = True)  }}
                 <h3>Password must contain the following:</h3>
                 <div class="message">
                   <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
-                  <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+                  <p id="capital" class="invalid">An <b>uppercase</b> letter</p>
                   <p id="number" class="invalid">A <b>number</b></p>
                   <p id="length" class="invalid">Minimum <b>8 characters</b></p>
                 </div>
@@ -25,13 +25,27 @@
                 {{ form.verify_password.label }} {{ form.verify_password }}
 
 
+
+
+                <div class="error">
                 {% if username_error_message is not none %}
-                  <div class="error"><li>{{ username_error_message }}</li></div>
+                    <li>{{ username_error_message }}</li>
                 {% endif %}
 
                 {% for error in form.verify_password.errors %}
-                  <div class="error"><li>{{ error }}</li></div>
+                  <li>{{ error }}</li>
                 {% endfor %}
+
+                <!-- #Incase HTML validation fails -->
+
+                {% for error in form.username.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+                {% for error in form.password.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+
+                </div>
 
 
             {{ form.submit }}

@@ -180,12 +180,13 @@ header{
     background-size: cover;
 }
 
-.login-box {
-    position: absolute;
+.login-box, .register-box{
+    position: relative;
     display: flex;
+    justify-content: space-between;
     flex-direction: column;
     width: 500px;
-    height: 380px;
+    min-height: 380px;
     background-color: #FCFCFC;
     padding: 30px;
     border-radius: 10px;
@@ -205,17 +206,15 @@ input[type="password"]{
 }
 
 .error{
-    list-style: none;
     position: absolute;
+    list-style: none;
     color: red;
-    margin-top: 5px;
 }
 
 input[type="submit"] {
-    margin-top: 35px;
+    margin-top: 30px;
     width: 100%;
     padding: 15px;
-    box-sizing: border-box;
     background-color: #F5BABB;
     border: none;
     cursor: pointer;
@@ -230,7 +229,6 @@ input[type="submit"]:hover {
 
 .register{
     margin-top: auto;
-    justify-content: flex-end;
 }
 
 .register a{
@@ -243,18 +241,6 @@ input[type="submit"]:hover {
 
 .register-button:hover{
     text-decoration: underline;
-}
-
-.register-box {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    width: 500px;
-    height: 600px;
-    background-color: #FCFCFC;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .message{

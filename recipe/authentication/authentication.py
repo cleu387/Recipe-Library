@@ -22,10 +22,10 @@ def register():
         try:
             services.add_user(form.username.data, form.password.data, repo.repo_instance)
 
-            # All is well, redirect the user to the login page.
+            # If successfully registered user, back to homepage.
             return redirect(url_for('authentication_bp.login'))
         except services.NameNotUniqueException:
-            username_not_unique = 'Your username is already taken - please supply another'
+            username_not_unique = 'Your username is taken. Try another one.'
 
     # For a GET or a failed POST request, return the Registration Web page.
     return render_template(
@@ -58,7 +58,7 @@ def login():
 
         except services.InvalidException:
             # Authentication failed, set a suitable error message.
-            authentication_failed = 'Username or Password is incorrect - please try again.'
+            authentication_failed = 'Login failed! Please check username and password and try again.'
 
     # For a GET or a failed POST, return the Login Web page.
     return render_template(
@@ -76,6 +76,7 @@ def logout():
 class PasswordValid:
     def __init__(self, message=None):
         if not message:
+            #Incase HTML validation fails
             message = u'Your password must be at least 8 characters, and contain an upper case letter,\
             a lower case letter and a digit'
         self.message = message
@@ -91,9 +92,18 @@ class PasswordValid:
             raise ValidationError(self.message)
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', [DataRequired(),Length(min=3)])
-    password = PasswordField('Password', [DataRequired(), PasswordValid()])
-    verify_password = PasswordField('Verify Password', [DataRequired(), EqualTo('password', message='Passwords must match')])
+    username = StringField('Username', [
+        DataRequired(message='Username is required'),
+        Length(min=3, message='Username is too short')])
+
+    password = PasswordField('Password', [
+        DataRequired(message='Password is required'),
+        PasswordValid()])
+
+    verify_password = PasswordField('Verify Password', [
+        DataRequired(message='Verify Password is required'),
+        EqualTo('password', message='Passwords must match')])
+
     submit = SubmitField('Register')
 
 
