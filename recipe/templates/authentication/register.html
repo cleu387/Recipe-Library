@@ -13,7 +13,7 @@
 
                 {{ form.username.label }} {{ form.username }}
 
-                {{ form.password.label }} {{ form.password }}
+                {{ form.password.label }} {{ form.password(id="password", pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}", title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters", required = True)  }}
                 <h3>Password must contain the following:</h3>
                 <div class="message">
                   <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
@@ -24,6 +24,14 @@
 
                 {{ form.verify_password.label }} {{ form.verify_password }}
 
+
+                {% if username_error_message is not none %}
+                  <div class="error"><li>{{ username_error_message }}</li></div>
+                {% endif %}
+
+                {% for error in form.verify_password.errors %}
+                  <div class="error"><li>{{ error }}</li></div>
+                {% endfor %}
 
 
             {{ form.submit }}

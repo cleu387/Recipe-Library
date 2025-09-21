@@ -25,14 +25,14 @@ def register():
             # All is well, redirect the user to the login page.
             return redirect(url_for('authentication_bp.login'))
         except services.NameNotUniqueException:
-            username_not_unique = 'Your user name is already taken - please supply another'
+            username_not_unique = 'Your username is already taken - please supply another'
 
     # For a GET or a failed POST request, return the Registration Web page.
     return render_template(
         'authentication/register.html',
         title='Register',
         form=form,
-        user_name_error_message=username_not_unique,
+        username_error_message=username_not_unique,
         handler_url=url_for('authentication_bp.register')
     )
 
@@ -91,9 +91,9 @@ class PasswordValid:
             raise ValidationError(self.message)
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', [DataRequired(message='Your username is required'),Length(min=3, message='Your username is too short')])
-    password = PasswordField('Password', [DataRequired(message='Your password is required'), PasswordValid()])
-    verify_password = PasswordField('Verify Password', [DataRequired(message='Please confirm your password'), EqualTo('password', message='Passwords must match')])
+    username = StringField('Username', [DataRequired(),Length(min=3)])
+    password = PasswordField('Password', [DataRequired(), PasswordValid()])
+    verify_password = PasswordField('Verify Password', [DataRequired(), EqualTo('password', message='Passwords must match')])
     submit = SubmitField('Register')
 
 

@@ -205,6 +205,7 @@ input[type="password"]{
 }
 
 .error{
+    list-style: none;
     position: absolute;
     color: red;
     margin-top: 5px;
