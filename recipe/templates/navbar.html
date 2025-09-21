@@ -13,7 +13,15 @@
             <div class="nav-sep"></div>
             <li><a href="{{ url_for('recipe_bp.browse_recipes') }}">Browse</a></li>
             <div class="nav-sep"></div>
-            <li><a href="{{ url_for('authentication_bp.login') }}">Login</a></li>
+            <li>
+                {% if 'username' in session %}
+                    <li><a href="{{ url_for('home_bp.home') }}">Profile</a></li>
+                    <div class="nav-sep"></div>
+                    <li><a href="{{ url_for('authentication_bp.logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('authentication_bp.login') }}">Login</a></li>
+                {% endif %}
+            </li>
         </ul>
     </div>
     </header>

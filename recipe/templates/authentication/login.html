@@ -6,33 +6,29 @@
     <div class="auth-img"></div>
     <div class="auth-container">
 
-    <div class="login-box">
-        <h1 class="title">{{ title }}</h1>
-        <form method="POST" action="{{ handler_url }}">
-            {{ form.csrf_token }}
+        <div class="login-box">
+            <h1 class="title">{{ title }}</h1>
+            <form method="POST" action="{{ handler_url }}">
+                {{ form.csrf_token }}
 
-             <div class="form-field">
+
                 {{ form.username.label }} {{ form.username }}
-            </div>
 
-            <div class="form-field">
                 {{ form.password.label }} {{ form.password }}
-                <div class="forgot-password">
-                    <a href="{{ url_for('home_bp.home') }}">Forgot Password?</a>
+
+                <div class="error">
+                    {% if authentication_fail_message%}
+                       {{ authentication_fail_message }}
+                    {% endif %}
                 </div>
-                {% if authentication_fail_message%}
-                    <a class="error">{{ authentication_fail_message }}</a>
-                {% endif %}
 
+            {{ form.submit }}
+            </form>
+            <div class="register">
+                <a>Don't have an account?<br></a>
+                <a href="{{ url_for('authentication_bp.register') }}" class="register-button">Register here</a>
+            </div>
         </div>
-        {{ form.submit }}
-        </form>
-
-        <div class="register">
-            <a>Don't have an account?<br></a>
-            <a href="{{ url_for('authentication_bp.register') }}" class="register-button">Register here</a>
-        </div>
-    </div>
     </div>
 </div>
 {% endblock %}
