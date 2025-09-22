@@ -308,9 +308,21 @@ input[type="submit"]:hover {
     padding: 20px;
 }
 
+/* Profile CSS*/
 .favourite-recipes{
     display: flex;
     align-items: center;
-    justify-content: left;
+    justify-content: center;
     gap: 30px;
 }
+
+.favourite-recipes .recipe-card{
+    width: 350px;
+    height: 450px;
+}
+
+.favourite-recipes .ft-recipe-text-{
+    margin: 0 10px 0;
+    -webkit-line-clamp: 0;
+}
+

@@ -9,7 +9,7 @@ user_blueprint = Blueprint("user_bp", __name__)
 
 @user_blueprint.route("/profile", methods=["GET"])
 def profile():
-    recipes = [services.get_random_recipe(repo.repo_instance) for _ in range(2)]
+    recipes = [services.get_random_recipe(repo.repo_instance) for _ in range(5)]
 
     return render_template(
         "user/profile.html",
