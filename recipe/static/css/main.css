@@ -307,3 +307,10 @@ input[type="submit"]:hover {
 .whole-recipe-layout{
     padding: 20px;
 }
+
+.favourite-recipes{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    gap: 30px;
+}

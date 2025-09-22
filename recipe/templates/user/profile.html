@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{% block title %}{{ super() }} | Profile{%  endblock %}
+
+
+{% block content %}
+    <h1>{{ session['username'] }}</h1>
+    <h3>Favourite Recipes</h3>
+    <div class="favourite-recipes">
+        {% for recipe in recipes %}
+                <a href="{{ url_for('recipe_bp.recipeDescription', recipe_id=recipe.id) }}" class="recipe-card">
+                    <img src="{{ recipe.images[0] }}" alt="{{ recipe.name }}">
+                    <div class = "ft-recipe-text-">
+                        <h3>{{ recipe.name }}</h3>
+                        <p>{{ recipe.description }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+    </div>
+
+    <div class="Reviews">
+    <p>Ratings and blah, blah, blah</p>
+    </div>
+
+{% endblock %}
