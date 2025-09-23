@@ -153,7 +153,7 @@ header{
 
 .recipe-card img{
     width: 100%;
-    height: 400px;
+    height: 70%;
     object-fit: cover;
 }
 
@@ -312,7 +312,6 @@ input[type="submit"]:hover {
 .favourite-recipes{
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 30px;
 }
 
@@ -323,6 +322,9 @@ input[type="submit"]:hover {
 
 .favourite-recipes .ft-recipe-text-{
     margin: 0 10px 0;
-    -webkit-line-clamp: 0;
+    display: flex;
 }
 
+.delete-button {
+
+}

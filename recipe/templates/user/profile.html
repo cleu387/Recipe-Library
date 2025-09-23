@@ -11,13 +11,15 @@
                     <img src="{{ recipe.images[0] }}" alt="{{ recipe.name }}">
                     <div class = "ft-recipe-text-">
                         <h3>{{ recipe.name }}</h3>
+                        <div class="rating"></div>
+                        <div class="delete-button"><button>Delete</button></div>
                     </div>
                 </a>
             {% endfor %}
     </div>
 
     <div class="Reviews">
-    <p>Ratings and blah, blah, blah</p>
+    <h3>Ratings and blah, blah, blah</h3>
     </div>
 
 {% endblock %}
