@@ -122,9 +122,13 @@ header{
     align-items: center;
     justify-content: center;
     gap: 30px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    max-width: 100%;
 }
 
 .recipe-card{
+    position: relative;
     background-color: white;
     width: 450px;
     height: 550px;
@@ -144,7 +148,7 @@ header{
 
 .ft-recipe-text-{
     margin: 10px;
-    color: darkblue;
+    color: #022A55;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
@@ -154,7 +158,7 @@ header{
 
 .recipe-card img{
     width: 100%;
-    height: 400px;
+    height: 70%;
     object-fit: cover;
 }
 
@@ -280,6 +284,108 @@ input[type="submit"]:hover {
     text-align: left;
 }
 
+.search-menu{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    gap: 10px;
+    margin: 20px auto;
+    max-width: 1000px;
+}
+
+.submit-button{
+    background-color: white;
+    border: 1px solid  #F5BABB;
+    cursor:pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover{
+    background-color: #F5BABB;
+}
+
+.search-menu select,
+.search-menu input,
+.search-menu button{
+    padding: 8px 16px;
+    font-size: 1.2rem;
+    border: 1px solid #F5BABB;
+    border-radius: 20px;
+    width: auto;
+    margin: 0;
+}
+
+.search-menu input{
+    flex-grow: 1;
+}
+
+.pagination{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 10px;
+}
+
+.pagination a{
+    padding: 5px 10px;
+    font-size: 1.3rem;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    color: black;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination a:hover {
+    background-color: #F5BABB;
+    color: white;
+}
+
+.pagination a.active {
+    background-color: #F5BABB;
+    color: white;
+}
+
+/* Profile CSS */
+.favourite-recipes{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+.favourite-recipes .recipe-card{
+    width: 350px;
+    height: 350px;
+    flex-shrink: 0;
+}
+
+.favourite-recipes .ft-recipe-text-{
+    margin: 5px;
+}
+
+.delete-favourite {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.recipe-card:hover .delete-favourite{
+    opacity: 1;
+}
+
 /* Recipe description CSS */
 .recipe-layout{
     display: flex;
@@ -293,10 +399,15 @@ input[type="submit"]:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 460px;
+    margin-top: 20px;
+    height: 40vh;
+    width: 100%;
 }
+
 .recipe-image img{
-    height: auto;
+    object-fit: cover;
+    height: 100%;
+    width: auto;
 }
 
 .recipe-info{

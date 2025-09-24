@@ -15,14 +15,28 @@ def get_recipe(repo: AbstractRepository):
             "name": recipe.name,
             "author": recipe.author.name,
             "category": recipe.category.name if recipe.category else "",
-
+            "image": recipe.images[0] if recipe.images else "",
+            "description": recipe.description,
         }
         recipe_dicts.append(recipe_dict)
     return recipe_dicts
 
 def get_recipe_by_id(recipe_id: int, repo: AbstractRepository):
-    recipes = repo.get_recipe()
-    for recipe in recipes:
-        if recipe.id == recipe_id:
-            return recipe
-    return None
+    return repo.get_recipe_by_id(recipe_id)
+
+class NonExistentRecipe(Exception):
+    pass
+
+class UnknownUserException(Exception):
+    pass
+
+def add_favourite_recipe(recipe_id: int, username: str, repo: AbstractRepository):
+    recipe = repo.get_recipe_by_id(recipe_id)
+    if recipe is None:
+        raise NonExistentRecipe
+
+    user = repo.get_user(username)
+    if user is None:
+        raise UnknownUserException
+
+    repo.add_favourite(user, recipe)

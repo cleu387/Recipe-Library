@@ -78,8 +78,12 @@ def logout():
 def login_required(view):
     @wraps(view)
     def wrapped_view(**kwargs):
-        if 'username' not in session:
+        username = session.get('username')
+
+        if not username or repo.repo_instance.get_user(username) is None:
+            session.clear()
             return redirect(url_for('authentication_bp.login'))
+
         return view(**kwargs)
     return wrapped_view
 

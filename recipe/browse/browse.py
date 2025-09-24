@@ -3,13 +3,14 @@ import recipe.adapters.Repository as repo
 import recipe.browse.services as services
 from recipe.browse import review_services as review_services
 from recipe.authentication.authentication import login_required
+from recipe.authentication.authentication import login_required
 
 browse_blueprint = Blueprint("recipe_bp", __name__)
 
 @browse_blueprint.route("/browse", methods=["GET"])
 def browse_recipes():
     page = int(request.args.get("page", 1))
-    per_page = 50
+    per_page = 20
     search_query = request.args.get("search", "").strip().lower()
     search_type = request.args.get("search_type", "name")
 
@@ -39,8 +40,6 @@ def browse_recipes():
 
     return render_template(
         "browse/browse.html",
-        title=f"Browse recipes | CS235 Recipe Portal",
-        heading="Browse recipes",
         recipes=recipes_on_page,
         num_recipes=num_recipes,
         page=page,
@@ -62,6 +61,15 @@ def recipeDescription(recipe_id):
         recipe=recipe,
         reviews=reviews,
         current_user = user
+    )
+
+@browse_blueprint.route("/recipe/<int:recipe_id>/favourites", methods=["POST"])
+@login_required
+def add_favourites(recipe_id):
+    username = session['username']
+    services.add_favourite_recipe(recipe_id, username, repo.repo_instance)
+    return redirect(
+        url_for('recipe_bp.recipeDescription', recipe_id=recipe_id)
     )
 
 @browse_blueprint.route("/recipe/<int:recipe_id>", methods=["POST"])

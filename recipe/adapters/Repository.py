@@ -3,6 +3,7 @@ from typing import List
 from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.user import User
 from recipe.domainmodel.review import Review
+from recipe.domainmodel.favourite import Favourite
 
 repo_instance = None
 
@@ -53,4 +54,19 @@ class AbstractRepository(abc.ABC):
     @abc.abstractmethod
     def get_recipe_reviews(self, recipe_id: int):
         """ Returns a list of Reviews for the given recipe. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_favourite(self, user: User, recipe: Recipe) -> Favourite:
+        """" Adds a Favourite Recipe to the repository. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def remove_favourite(self, user: User, recipe: Recipe):
+        """" Removes a Favourite Recipe to the repository. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_favourites(self, user: User) -> List[Recipe]:
+        """" Gets a list of Favourite Recipes to the repository. """
         raise NotImplementedError

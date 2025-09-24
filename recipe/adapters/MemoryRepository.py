@@ -1,8 +1,7 @@
 from bisect import insort_left
-from typing import List, Dict
+from typing import List
 
 from recipe.domainmodel.recipe import Recipe
-from recipe.domainmodel.review import Review
 from recipe.domainmodel.user import User
 from recipe.adapters.Repository import AbstractRepository
 from pathlib import Path
@@ -13,6 +12,8 @@ class MemoryRepository(AbstractRepository):
         self.__recipes = list()
         self.__users = list()
         self.__reviews = dict()
+        self.__favourites = list()
+        self.__favourite_id_counter = 1
 
     def add_recipe(self, recipe:Recipe):
         if isinstance(recipe, Recipe):
@@ -54,6 +55,26 @@ class MemoryRepository(AbstractRepository):
         self.__reviews.setdefault(recipe_id, [])
         return [r for r in self.__reviews[recipe_id] if r is not None]
 
+
+    def add_favourite(self, user: User, recipe: Recipe):
+        favourite = Favourite(
+            favourite_id = self.__favourite_id_counter,
+            user = user,
+            recipe = recipe
+        )
+        self.__favourite_id_counter += 1
+        user.add_favourite_recipe(favourite)
+        self.__favourites.append(favourite)
+
+    def remove_favourite(self, user: User, recipe: Recipe):
+        for favourite in self.__favourites:
+            if favourite.user == user and favourite.recipe == recipe:
+                self.__favourites.remove(favourite)
+                user.remove_favourite_recipe(favourite)
+                return
+
+    def get_favourites(self, user: User) -> List[Recipe]:
+        return [recipe.recipe for recipe in self.__favourites if recipe.user == user]
 
 
 def populate(repo: AbstractRepository):
