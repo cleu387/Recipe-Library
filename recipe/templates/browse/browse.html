@@ -1,11 +1,8 @@
 {% extends 'layout.html' %}
-{% block title %}{{ super() }} | Recipe Portal{%  endblock %}
+{% block title %}{{ super() }} | Browse Recipe{%  endblock %}
 
 
 {% block content %}
-    <h1>{{ heading }} </h1>
-    <h2>Number of recipes: {{ num_recipes }}</h2>
-
     <form method="get" action="{{ url_for('recipe_bp.browse_recipes') }}" class="search-menu">
         <label for="search-type">Search by</label>
         <select id="search-type" name="search_type">
@@ -19,19 +16,17 @@
         <input type="text" name="search" placeholder="Search recipes" value="{{ search_query or '' }}">
         <button type="submit" class="submit-button">Search</button>
     </form>
-        <table class="recipe-table">
-            <tr>
-                <th>Recipe ID</th>
-                <th>Recipe Name</th>
-                <th>Recipe Author</th>
-            </tr>
+        <div class = "recipes-block">
             {% for recipe in recipes %}
-                <tr>
-                    <td>{{ recipe.id }}</td>
-                    <td><a href="{{ url_for('recipe_bp.recipeDescription', recipe_id=recipe.id) }}">{{ recipe.name }}</a></td>
-                    <td>{{ recipe.author }}</td>
-                </tr>
+                <a href="{{ url_for('recipe_bp.recipeDescription', recipe_id=recipe.id) }}" class="recipe-card">
+                    <img src="{{ recipe.image }}" alt="{{ recipe.name }}">
+                    <div class = "ft-recipe-text-">
+                        <h3>{{ recipe.name }}</h3>
+                        <p>By: {{ recipe.author }}</p>
+                        <p>{{ recipe.description }}</p>
+                    </div>
+                </a>
             {% endfor %}
-        </table>
+        </div>
 {% include "browse/_pagination.html" with context %}
 {% endblock %}

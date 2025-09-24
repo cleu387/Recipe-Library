@@ -8,7 +8,7 @@ browse_blueprint = Blueprint("recipe_bp", __name__)
 @browse_blueprint.route("/browse", methods=["GET"])
 def browse_recipes():
     page = int(request.args.get("page", 1))
-    per_page = 50
+    per_page = 20
     search_query = request.args.get("search", "").strip().lower()
     search_type = request.args.get("search_type", "name")
 
@@ -38,8 +38,6 @@ def browse_recipes():
 
     return render_template(
         "browse/browse.html",
-        title=f"Browse recipes | CS235 Recipe Portal",
-        heading="Browse recipes",
         recipes=recipes_on_page,
         num_recipes=num_recipes,
         page=page,

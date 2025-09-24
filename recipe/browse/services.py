@@ -15,7 +15,8 @@ def get_recipe(repo: AbstractRepository):
             "name": recipe.name,
             "author": recipe.author.name,
             "category": recipe.category.name if recipe.category else "",
-
+            "image": recipe.images[0] if recipe.images else "",
+            "description": recipe.description,
         }
         recipe_dicts.append(recipe_dict)
     return recipe_dicts

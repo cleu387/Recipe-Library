@@ -11,6 +11,7 @@
                     <img src="{{ recipe.images[0] }}" alt="{{ recipe.name }}">
                     <div class = "ft-recipe-text-">
                         <h3>{{ recipe.name }}</h3>
+                        <p>By: {{ recipe.author.name }}</p>
                         <div class="rating"></div>
                         <form method="post" action="{{ url_for('users_bp.remove_favourite', recipe_id=recipe.id) }}">
                             <button type="submit" class="delete-favourite">🗑️</button>
