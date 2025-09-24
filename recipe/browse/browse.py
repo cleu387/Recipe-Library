@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, session, redirect, url_for
 import recipe.adapters.Repository as repo
 import recipe.browse.services as services
+from recipe.authentication.authentication import login_required
 
 browse_blueprint = Blueprint("recipe_bp", __name__)
 
@@ -55,4 +56,13 @@ def recipeDescription(recipe_id):
         "recipebrowse/recipeDescription.html",
         title=f"Recipe: {recipe.name}",
         recipe=recipe
+    )
+
+@browse_blueprint.route("/recipe/<int:recipe_id>/favourites", methods=["POST"])
+@login_required
+def add_favourites(recipe_id):
+    username = session['username']
+    services.add_favourite_recipe(recipe_id, username, repo.repo_instance)
+    return redirect(
+        url_for('recipe_bp.recipeDescription', recipe_id=recipe_id)
     )

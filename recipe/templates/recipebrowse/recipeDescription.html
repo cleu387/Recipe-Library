@@ -49,4 +49,8 @@
 
     <a href="{{ url_for('recipe_bp.browse_recipes') }}">Back To Browse</a>
 </div>
+
+<form method="post" action="{{ url_for('recipe_bp.add_favourites', recipe_id=recipe.id) }}">
+    <button type="submit" class="add-to-favourite">Add to Favourites ❤️</button>
+</form>
 {% endblock %}
