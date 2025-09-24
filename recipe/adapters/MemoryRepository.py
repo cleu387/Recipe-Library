@@ -6,6 +6,7 @@ from recipe.domainmodel.user import User
 from recipe.adapters.Repository import AbstractRepository
 from pathlib import Path
 from recipe.adapters.datareader.CSVReader import CSVReader
+from recipe.domainmodel.review import Review
 
 class MemoryRepository(AbstractRepository):
     def __init__(self):
