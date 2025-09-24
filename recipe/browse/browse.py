@@ -9,14 +9,27 @@ def browse_recipes():
     page = int(request.args.get("page", 1))
     per_page = 50
     search_query = request.args.get("search", "").strip().lower()
-    print(f"[DEBUG] Search query: '{search_query}'")
+    search_type = request.args.get("search_type", "name")
+
     num_recipes = services.get_number_of_recipes(repo.repo_instance)
     all_recipes = services.get_recipe(repo.repo_instance)
-    print(f"[DEBUG] Total recipes before filter: {len(all_recipes)}")
+
     if search_query:
-        all_recipes = [r for r in all_recipes if search_query in r["name"].lower()]
+        if search_type == "name":
+            all_recipes = [r for r in all_recipes if search_query in r["name"].lower()]
+        elif search_type == "author":
+            all_recipes = [r for r in all_recipes if search_query in r["author"].lower()]
+        elif search_type == "category":
+            all_recipes = [r for r in all_recipes if search_query in (r.get("category") or "").lower()]
+        elif search_type == "id":
+            try:
+                search_id = int(search_query)
+                all_recipes = [r for r in all_recipes if r["id"] == search_id]
+            except ValueError:
+                all_recipes = []
+
     num_recipes = len(all_recipes)
-    print(f"[DEBUG] Total recipes after filter: {len(all_recipes)}")
+
     start = (page - 1) * per_page
     end = start + per_page
     recipes_on_page = all_recipes[start:end]
@@ -31,7 +44,8 @@ def browse_recipes():
         page=page,
         total_pages=total_pages,
         endpoint="recipe_bp.browse_recipes",
-        search_query=search_query
+        search_query=search_query,
+        search_type=search_type,
     )
 
 @browse_blueprint.route("/recipe/<int:recipe_id>", methods=["GET"])
