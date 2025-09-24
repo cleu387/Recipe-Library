@@ -12,7 +12,9 @@
                     <div class = "ft-recipe-text-">
                         <h3>{{ recipe.name }}</h3>
                         <div class="rating"></div>
-                        <div class="delete-button"><button>Delete</button></div>
+                        <form method="post" action="{{ url_for('users_bp.remove_favourite', recipe_id=recipe.id) }}">
+                            <button type="submit" class="delete-favourite">🗑️</button>
+                        </form>
                     </div>
                 </a>
             {% endfor %}
