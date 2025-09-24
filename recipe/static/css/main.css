@@ -351,3 +351,9 @@ input[type="submit"]:hover {
 .search-menu button.submit-button:hover{
     background-color:#F5BABB;
 }
+
+.review{
+    background-color: white;
+    border: 2px solid black;
+    box-sizing: border-box;
+}

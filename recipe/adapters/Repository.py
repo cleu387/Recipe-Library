@@ -2,6 +2,7 @@ import abc
 from typing import List
 from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.user import User
+from recipe.domainmodel.review import Review
 
 repo_instance = None
 
@@ -42,4 +43,14 @@ class AbstractRepository(abc.ABC):
 
         If there is no User with the given username, this method returns None.
         """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_review(self, review: Review):
+        """ Adds a Review to the repository. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_recipe_reviews(self, recipe_id: int):
+        """ Returns a list of Reviews for the given recipe. """
         raise NotImplementedError

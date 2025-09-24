@@ -1,7 +1,8 @@
 from bisect import insort_left
-from typing import List
+from typing import List, Dict
 
 from recipe.domainmodel.recipe import Recipe
+from recipe.domainmodel.review import Review
 from recipe.domainmodel.user import User
 from recipe.adapters.Repository import AbstractRepository
 from pathlib import Path
@@ -11,6 +12,7 @@ class MemoryRepository(AbstractRepository):
     def __init__(self):
         self.__recipes = list()
         self.__users = list()
+        self.__reviews = dict()
 
     def add_recipe(self, recipe:Recipe):
         if isinstance(recipe, Recipe):
@@ -36,6 +38,22 @@ class MemoryRepository(AbstractRepository):
 
     def get_user(self, username) -> User:
         return next((user for user in self.__users if user.username == username), None)
+
+    def add_review(self, review: Review):
+        user = review.user
+        recipe = review.recipe
+        current_reviews = self.__reviews[recipe.id]
+        for temp in current_reviews:
+            if temp.user.username == user.username:
+                raise ValueError(f"User '{user.username}' has already reviewed this recipe!")
+        self.__reviews[recipe.id].append(review)
+        review.user.reviews.append(review)
+        review.recipe.reviews.append(review)
+
+    def get_recipe_reviews(self, recipe_id: int):
+        self.__reviews.setdefault(recipe_id, [])
+        return [r for r in self.__reviews[recipe_id] if r is not None]
+
 
 
 def populate(repo: AbstractRepository):

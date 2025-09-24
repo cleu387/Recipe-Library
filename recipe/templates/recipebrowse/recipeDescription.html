@@ -48,5 +48,12 @@
     </ol>
 
     <a href="{{ url_for('recipe_bp.browse_recipes') }}">Back To Browse</a>
+    {% if message %}
+        <div class="message"{{ message }}></div>
+    {% endif %}
+
+
+    <h1>Reviews:</h1>
+    {% include "recipebrowse/_reviews.html" %}
 </div>
 {% endblock %}

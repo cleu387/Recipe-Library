@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, session, redirect, url_for
 import recipe.adapters.Repository as repo
 import recipe.browse.services as services
+from recipe.browse import review_services as review_services
+from recipe.authentication.authentication import login_required
 
 browse_blueprint = Blueprint("recipe_bp", __name__)
 
@@ -51,8 +53,32 @@ def browse_recipes():
 @browse_blueprint.route("/recipe/<int:recipe_id>", methods=["GET"])
 def recipeDescription(recipe_id):
     recipe = services.get_recipe_by_id(recipe_id, repo.repo_instance)
+    reviews = review_services.get_recipe_reviews(repo.repo_instance, recipe_id)
+    username = session.get("username")
+    user = review_services.get_user(repo.repo_instance, username)
     return render_template(
         "recipebrowse/recipeDescription.html",
         title=f"Recipe: {recipe.name}",
-        recipe=recipe
+        recipe=recipe,
+        reviews=reviews,
+        current_user = user
     )
+
+@browse_blueprint.route("/recipe/<int:recipe_id>", methods=["POST"])
+@login_required
+def add_review(recipe_id):
+    username= session.get("username")
+    user = review_services.get_user(repo.repo_instance, username)
+    recipe = services.get_recipe_by_id(recipe_id, repo.repo_instance)
+    rating = int(request.form.get("rating"))
+    text = request.form.get("text")
+
+    message = None
+    try:
+        review_services.add_review(repo.repo_instance, user, recipe, rating, text)
+        message = "Review submitted successfully!"
+    except ValueError as e:
+        message = str(e)
+
+    reviews = review_services.get_recipe_reviews(repo.repo_instance, recipe_id)
+    return redirect(url_for("recipe_bp.recipeDescription", recipe_id=recipe_id))
