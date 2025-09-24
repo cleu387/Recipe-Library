@@ -6,6 +6,8 @@ from wtforms.validators import DataRequired, Length, ValidationError, EqualTo
 
 from password_validator import PasswordValidator
 
+from functools import wraps
+
 import recipe.authentication.services as services
 import recipe.adapters.Repository as repo
 
@@ -72,6 +74,15 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for('home_bp.home'))
+
+def login_required(view):
+    @wraps(view)
+    def wrapped_view(**kwargs):
+        if 'username' not in session:
+            return redirect(url_for('authentication_bp.login'))
+        return view(**kwargs)
+    return wrapped_view
+
 
 class PasswordValid:
     def __init__(self, message=None):

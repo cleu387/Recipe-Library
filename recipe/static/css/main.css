@@ -1,4 +1,5 @@
 body {
+    font-family: "roboto", sans-serif;
     background-color: #FFF5F2;
     margin: 0;
     padding: 0;
@@ -153,7 +154,7 @@ header{
 
 .recipe-card img{
     width: 100%;
-    height: 70%;
+    height: 400px;
     object-fit: cover;
 }
 
@@ -308,23 +309,45 @@ input[type="submit"]:hover {
     padding: 20px;
 }
 
-/* Profile CSS*/
-.favourite-recipes{
+.submit-button{
+    background-color: white;
+    border: 1px solid  #F5BABB;
+    padding: 8px 16px;
+    font-size: 1rem;
+    border-radius: 1px;
+    cursor:pointer;
+    transition: background-color 0.3s ease;
+}
+.submit-button:hover{
+    background-color: #F5BABB;
+}
+
+.search-menu{
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
-.favourite-recipes .recipe-card{
-    width: 350px;
-    height: 450px;
+.search-menu select,
+.search-menu input[type="text"]{
+    padding: 8px 12px;
+    font-size: 1rem;
+    border: 1px solid #F5BABB;
+    border-radius: 4px;
 }
 
-.favourite-recipes .ft-recipe-text-{
-    margin: 0 10px 0;
-    display: flex;
+.search-menu button.submit-button{
+    background-color: white;
+    border: 1px solid #F5BABB;
+    padding: 8px 16px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.delete-button {
-
+.search-menu button.submit-button:hover{
+    background-color:#F5BABB;
 }

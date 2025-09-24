@@ -11,9 +11,11 @@ def get_recipe(repo: AbstractRepository):
     recipe_dicts = []
     for recipe in recipes:
         recipe_dict = {
-            "id": recipe.id,
+            "id": int(recipe.id),
             "name": recipe.name,
             "author": recipe.author.name,
+            "category": recipe.category.name if recipe.category else "",
+
         }
         recipe_dicts.append(recipe_dict)
     return recipe_dicts
