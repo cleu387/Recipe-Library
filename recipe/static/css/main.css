@@ -307,3 +307,16 @@ input[type="submit"]:hover {
 .whole-recipe-layout{
     padding: 20px;
 }
+
+.submit-button{
+    background-color: #FFF5F2;
+    border: 1px solid #F5BABB;
+    padding: 8px 16px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor:pointer;
+    transition: background-color 0.3s ease;
+}
+.submit-button:hover{
+    background-color: #F5BABB;
+}

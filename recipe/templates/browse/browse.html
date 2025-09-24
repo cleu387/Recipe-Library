@@ -5,6 +5,12 @@
 {% block content %}
     <h1>{{ heading }} </h1>
     <h2>Number of recipes: {{ num_recipes }}</h2>
+
+    <form method="get" action="{{ url_for('recipe_bp.browse_recipes') }}">
+        <label for="search-input">Search recipes:</label>
+        <input type="text" name="search" placeholder="Search recipes" value="{{ search_query or '' }}">
+        <button type="submit" class="submit-button">Search</button>
+    </form>
         <table class="recipe-table">
             <tr>
                 <th>Recipe ID</th>

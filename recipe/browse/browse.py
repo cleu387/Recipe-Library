@@ -8,10 +8,15 @@ browse_blueprint = Blueprint("recipe_bp", __name__)
 def browse_recipes():
     page = int(request.args.get("page", 1))
     per_page = 50
-
+    search_query = request.args.get("search", "").strip().lower()
+    print(f"[DEBUG] Search query: '{search_query}'")
     num_recipes = services.get_number_of_recipes(repo.repo_instance)
     all_recipes = services.get_recipe(repo.repo_instance)
-
+    print(f"[DEBUG] Total recipes before filter: {len(all_recipes)}")
+    if search_query:
+        all_recipes = [r for r in all_recipes if search_query in r["name"].lower()]
+    num_recipes = len(all_recipes)
+    print(f"[DEBUG] Total recipes after filter: {len(all_recipes)}")
     start = (page - 1) * per_page
     end = start + per_page
     recipes_on_page = all_recipes[start:end]
@@ -26,6 +31,7 @@ def browse_recipes():
         page=page,
         total_pages=total_pages,
         endpoint="recipe_bp.browse_recipes",
+        search_query=search_query
     )
 
 @browse_blueprint.route("/recipe/<int:recipe_id>", methods=["GET"])
