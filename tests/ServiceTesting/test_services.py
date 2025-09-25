@@ -32,26 +32,18 @@ def test_get_recipe(repository):
     assert isinstance(recipe["name"], str)
     assert isinstance(recipe["author"], str)
 #Test for an ID that does link to a recipe
-def test_get_recipe_by_id_found():
-    mem_repo = MemoryRepository()
-    class TestRecipe:
-        def __init__(self,id,name):
-            self.id = id
-            self.name = name
+def test_get_recipe_by_id_found(repository):
+    test_id = 38
+    recipe = browse_services.get_recipe_by_id(test_id, repository)
 
-    recipe = TestRecipe(38,"Test Recipe")
-    mem_repo._recipes = [recipe]
-    result = browse_services.get_recipe_by_id(38, mem_repo)
-
-    assert result is None
-    assert recipe.name == "Test Recipe"
     assert recipe.id == 38
 #Test for an ID that does not link to a recipe
 def test_get_recipe_by_id_not_found():
+    recipe_id = 1
     mem_repo = MemoryRepository()
     mem_repo._recipes = []
-    result = browse_services.get_recipe_by_id(1, mem_repo)
-    assert result is None
+    with pytest.raises(ValueError):
+        browse_services.get_recipe_by_id(recipe_id, mem_repo)
 
 def test_get_random_recipe(repository):
     # Tests that get random recipe does in fact return a random recipe

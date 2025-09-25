@@ -27,7 +27,7 @@ def register():
             # If successfully registered user, back to homepage.
             return redirect(url_for('authentication_bp.login'))
         except services.NameNotUniqueException:
-            username_not_unique = 'Your username is taken. Try another one.'
+            username_not_unique = 'Your username is taken. Try another one'
 
     # For a GET or a failed POST request, return the Registration Web page.
     return render_template(
@@ -92,8 +92,7 @@ class PasswordValid:
     def __init__(self, message=None):
         if not message:
             #Incase HTML validation fails
-            message = u'Your password must be at least 8 characters, and contain an upper case letter,\
-            a lower case letter and a digit'
+            message = u'Must contain at least one number and one uppercase and lowercase letter, and minimum of 8 characters'
         self.message = message
 
     def __call__(self, form, field):
