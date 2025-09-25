@@ -3,7 +3,6 @@ import recipe.adapters.Repository as repo
 
 from recipe.authentication.authentication import login_required
 import recipe.users.services as services
-from recipe.domainmodel.favourite import Favourite
 
 
 users_blueprint = Blueprint("users_bp", __name__)

@@ -68,7 +68,6 @@ def test_logout(client, auth):
     with client.session_transaction() as session:
         assert 'username' not in session
 
-
 def test_index(client):
     # Check that we can retrieve the home page.
     response = client.get('/')
@@ -79,31 +78,27 @@ def test_login_required_to_view_profile(client):
     response = client.get('/profile')
     assert response.headers['Location'] == '/authentication/login'
 
-"""def test_search_by_id(client):
-    recipe_id = 38
-    response = client.get("/recipes/search/?search={recipe_id}")
-    assert response.status_code == 200
-    assert recipe_id in response.data
-
-def test_login_required_to_comment(client):
-    response = client.post('/comment')
+def test_login_required_to_add_favourite(client):
+    response = client.post('/recipe/38/favourites')
     assert response.status_code == 302
-    assert response.headers['Location'] == 'http://localhost/authentication/login'
+    assert response.headers['Location'] == '/authentication/login'
 
-def test_health_star_rating(client):
-    response = client.get("/get_health_star_rating", data = {"recipe_id": 38})
+def test_add_favourite(client, auth):
+    # Register and login to add to favourite
+    auth.register()
+    auth.login()
+
+    # Testing with recipe id:38
+    response = client.post('/recipe/38/favourites')
+    assert response.status_code == 302
+    assert response.headers['Location'] == '/recipe/38'
+
+def test_view_favourites(client, auth):
+    auth.register()
+    auth.login()
+
+    # Testing with recipe id:38 and see if it exists in profile favourite recipes
+    client.post('/recipe/38/favourites')
+    response = client.get('/profile')
     assert response.status_code == 200
-    assert b"Health Star Rating" in response.data
-
-def test_login(client, auth):
-
-    response = client.get("/login/")
-    assert response.status_code == 200
-
-    # Redirects to homepage after logging in
-    response = auth.login()
-    assert response.headers['Location'] == 'http://localhost/'
-
-"""
-
-
+    assert b'/recipe/38' in response.data

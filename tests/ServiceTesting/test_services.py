@@ -36,10 +36,11 @@ def test_get_recipe(repository):
     assert isinstance(recipe["author"], str)
 #Test for an ID that does link to a recipe
 def test_get_recipe_by_id_found(repository):
-    test_id = 38
+    test_id = repository.get_recipe()[0].id
+
     recipe = browse_services.get_recipe_by_id(test_id, repository)
 
-    assert recipe.id == 38
+    assert recipe.id == test_id
 #Test for an ID that does not link to a recipe
 def test_get_recipe_by_id_not_found():
     recipe_id = 1
@@ -72,11 +73,11 @@ def test_can_add_user(repository):
     # Check that password has been encrypted.
     assert user_as_dict['password'].startswith('scrypt:')
 
-def test_cannot_add_user_with_existing_name(auth, repository):
-    auth.register()
-
+def test_cannot_add_user_with_existing_name(repository):
     username = 'Edwin'
     password = 'EdwinNoLikeCooking101'
+
+    auth_services.add_user(username, password, repository)
 
     with pytest.raises(auth_services.NameNotUniqueException):
         auth_services.add_user(username, password, repository)
@@ -101,3 +102,51 @@ def test_authentication_with_invalid_credentials(repository):
 
     with pytest.raises(auth_services.InvalidException):
         auth_services.authenticate_user(new_username, 'NotARealPassword123', repository)
+
+def test_add_favourites(repository):
+    new_username = 'Edwin'
+    new_password = 'EdwinNoLikeCooking101'
+
+    auth_services.add_user(new_username, new_password, repository)
+    test_recipe = repository.get_recipe()[0]
+
+    browse_services.add_favourite_recipe(test_recipe.id, new_username, repository)
+    favourite = repository.get_user(new_username).favourite_recipes
+    favourite_recipes = [fav.recipe for fav in favourite]
+    assert test_recipe in favourite_recipes
+
+def test_get_favourites(repository):
+    new_username = 'Edwin'
+    new_password = 'EdwinNoLikeCooking101'
+
+    auth_services.add_user(new_username, new_password, repository)
+    test_recipe1 = repository.get_recipe()[0]
+    test_recipe2 = repository.get_recipe()[1]
+
+    browse_services.add_favourite_recipe(test_recipe1.id, new_username, repository)
+    browse_services.add_favourite_recipe(test_recipe2.id, new_username, repository)
+
+    favourite = users_services.get_favourites(new_username, repository)
+    favourite_recipes = [fav.recipe for fav in favourite]
+    assert test_recipe1 in favourite_recipes
+    assert test_recipe2 in favourite_recipes
+    assert test_recipe1 != test_recipe2
+    assert isinstance(favourite_recipes, list)
+
+def test_remove_favourites(repository):
+    new_username = 'Edwin'
+    new_password = 'EdwinNoLikeCooking101'
+
+    auth_services.add_user(new_username, new_password, repository)
+    test_recipe1 = repository.get_recipe()[0]
+    test_recipe2 = repository.get_recipe()[1]
+
+    browse_services.add_favourite_recipe(test_recipe1.id, new_username, repository)
+    browse_services.add_favourite_recipe(test_recipe2.id, new_username, repository)
+
+    users_services.remove_favourite_recipe(test_recipe1.id, new_username, repository)
+    favourite = users_services.get_favourites(new_username, repository)
+    favourite_recipes = [fav.recipe for fav in favourite]
+    assert test_recipe1 not in favourite_recipes
+    assert test_recipe2 in favourite_recipes
+    assert isinstance(favourite, list)
