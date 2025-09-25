@@ -26,7 +26,8 @@ def test_browse_recipes_page2(client):
     recipes = repo.repo_instance.get_recipe()
     data = response.data.decode("utf-8")
     assert recipes[0].name not in data
-    assert recipes[50].name in data
+    assert recipes[20].name in data
+    assert recipes[50].name not in data
 
 
 
