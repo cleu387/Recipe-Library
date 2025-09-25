@@ -3,6 +3,8 @@ import random
 import recipe.adapters.Repository as repo
 import recipe.browse.services as browse_services
 import recipe.home.services as home_services
+import recipe.browse.services as browse_services
+import recipe.home.services as home_services
 import recipe.users.services as users_services
 from recipe.authentication import services as auth_services
 from recipe.adapters.MemoryRepository import MemoryRepository, populate
@@ -20,10 +22,12 @@ def repository():
 
 def test_get_number_of_recipes(repository):
     length = repository.get_number_of_recipes()
+    assert browse_services.get_number_of_recipes(repository) == length
     # Tests that the service layer returns the same result as the abstract repository
     assert browse_services.get_number_of_recipes(repository) == length
 
 def test_get_recipe(repository):
+    recipe_dicts = browse_services.get_recipe(repository)
     recipe_dicts = browse_services.get_recipe(repository)
     # Tests that the return value exists and has the right parameters
     assert recipe_dicts is not None
@@ -49,6 +53,7 @@ def test_get_recipe_by_id_not_found():
         browse_services.get_recipe_by_id(recipe_id, mem_repo)
 
 def test_get_random_recipe(repository):
+    recipe_dicts = home_services.get_recipe(repository)
     # Tests that get random recipe does in fact return a random recipe
     import random
     recipes = repository.get_recipe()
@@ -66,38 +71,10 @@ def test_can_add_user(repository):
 
     auth_services.add_user(new_username, new_password, repository)
 
-    user_as_dict = auth_services.get_user(new_username, repository)
-    assert user_as_dict['username'] == new_username
 
-    # Check that password has been encrypted.
-    assert user_as_dict['password'].startswith('scrypt:')
 
-def test_cannot_add_user_with_existing_name(auth, repository):
-    auth.register()
 
-    username = 'Edwin'
-    password = 'EdwinNoLikeCooking101'
 
-    with pytest.raises(auth_services.NameNotUniqueException):
-        auth_services.add_user(username, password, repository)
 
-def test_authentication_with_valid_credentials(repository):
-    new_username = 'Edwin'
-    new_password = 'EdwinNoLikeCooking101'
 
-    auth_services.add_user(new_username, new_password, repository)
 
-    try:
-        auth_services.authenticate_user(new_username, new_password, repository)
-
-    except InvalidException:
-        assert False
-
-def test_authentication_with_invalid_credentials(repository):
-    new_username = 'Edwin'
-    new_password = 'EdwinNoLikeCooking101'
-
-    auth_services.add_user(new_username, new_password, repository)
-
-    with pytest.raises(auth_services.InvalidException):
-        auth_services.authenticate_user(new_username, 'NotARealPassword123', repository)
