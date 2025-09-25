@@ -88,9 +88,11 @@
 
     <h1>Reviews:</h1>
     {% include "recipebrowse/_reviews.html" %}
+
+    <form method="post" action="{{ url_for('recipe_bp.add_favourites', recipe_id=recipe.id) }}">
+    <button type="submit" class="general-button">Add to Favourites ❤️</button>
+    </form>
+
 </div>
 
-<form method="post" action="{{ url_for('recipe_bp.add_favourites', recipe_id=recipe.id) }}">
-    <button type="submit" class="general-button">Add to Favourites ❤️</button>
-</form>
 {% endblock %}
