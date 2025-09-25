@@ -300,6 +300,50 @@ input[type="submit"]:hover {
     border: 1px solid  #F5BABB;
     cursor:pointer;
     transition: background-color 0.3s ease;
+}.general-button{
+    display: inline-block;
+    margin-bottom: 10px;
+    background-color: white;
+    color: black;
+    text-decoration: none;
+    padding: 8px 16px;
+    font-size: 1.2rem;
+    border: 1px solid  #F5BABB;
+    border-radius: 999px;
+    cursor:pointer;
+    transition: background-color 0.3s ease;
+}
+
+.general-button:hover{
+    background-color: #F5BABB;
+}
+
+.rating-stars{
+    color: gold;
+    font-size: 2rem;
+    margin: 0.2rem 0;
+}
+.rating-number{
+    color: #333;
+    font-size: 1rem;
+    margin-left: 5px;
+}
+.no-rating{
+    color: #999;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.health-stars {
+    font-size: 0.9rem;
+    color: green;
+    margin-left: 10px;
+}
+
+.health-stars-number {
+    margin-left: 5px;
+    color: #444;
+    font-weight: normal;
 }
 
 .submit-button:hover{
@@ -350,6 +394,9 @@ input[type="submit"]:hover {
 }
 
 /* Profile CSS */
+.favourite-box{
+    padding: 10px;
+}
 .favourite-recipes{
     position: relative;
     display: flex;
@@ -358,6 +405,7 @@ input[type="submit"]:hover {
     margin: 0 auto;
     flex-wrap: wrap;
     max-width: 100%;
+    gap: 20px;
 }
 
 .favourite-recipes .recipe-card{

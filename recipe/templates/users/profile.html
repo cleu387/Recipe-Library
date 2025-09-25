@@ -3,6 +3,7 @@
 
 
 {% block content %}
+    <div class="favourite-box">
     <h1>{{ session['username'] }}</h1>
     <h3>Favourite Recipes</h3>
     <div class="favourite-recipes">
@@ -20,9 +21,5 @@
                 </a>
             {% endfor %}
     </div>
-
-    <div class="Reviews">
-    <h3>Ratings and blah, blah, blah</h3>
     </div>
-
 {% endblock %}

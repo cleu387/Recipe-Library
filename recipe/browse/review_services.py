@@ -17,6 +17,7 @@ def add_review(repo: AbstractRepository, user:User, recipe:Recipe, rating:int, r
         review_text,
         datetime.now()
     )
+    recipe.add_review(review)
     repo.add_review(review)
     return review
 

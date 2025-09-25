@@ -1,7 +1,9 @@
 from bisect import insort_left
 from typing import List
 
+from recipe.domainmodel.favourite import Favourite
 from recipe.domainmodel.recipe import Recipe
+from recipe.domainmodel.review import Review
 from recipe.domainmodel.user import User
 from recipe.adapters.Repository import AbstractRepository
 from pathlib import Path
@@ -74,8 +76,8 @@ class MemoryRepository(AbstractRepository):
                 user.remove_favourite_recipe(favourite)
                 return
 
-    def get_favourites(self, user: User) -> List[Recipe]:
-        return [recipe.recipe for recipe in self.__favourites if recipe.user == user]
+    def get_favourites(self, user: User) -> List[Favourite]:
+        return [recipe for recipe in self.__favourites if recipe.user == user]
 
 
 def populate(repo: AbstractRepository):

@@ -17,11 +17,11 @@ def test_home(client):
     assert "Home" in data
     assert "Welcome to the Recipe Library" in data
 
-    # Test if there are 2 featured recipes on the home page
+    # Test if there are 3 featured recipes on the home page
     found = 0
     for recipe in recipes:
         if recipe.name in data:
             found += 1
-        if found >= 2:
+        if found >= 3:
             break
-    assert found == 2
+    assert found == 3

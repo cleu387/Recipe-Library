@@ -9,7 +9,23 @@
 <div class = "whole-recipe-layout">
 <div class="recipe-layout">
     <div class="recipe-info">
-    <h1>{{ recipe.name }}</h1>
+    <h1>
+        {{ recipe.name }}
+        {% if recipe.rating is not none %}
+            <span class="rating-stars">
+                {% for i in range(1, 6) %}
+                    {% if recipe.rating >= i %}
+                        ★
+                    {% else %}
+                        ☆
+                    {% endif %}
+                {% endfor %}
+                <span class="rating-number">({{ "%.1f"|format(recipe.rating) }})</span>
+            </span>
+        {% else %}
+            <span class="rating-inline no-rating">No ratings</span>
+        {% endif %}
+    </h1>
     <p><strong>Author: </strong>{{ recipe.author.name }}</p>
     <p><strong>Description: </strong>{{ recipe.description }}</p>
     <p><strong>Category: </strong>{{ recipe.category.name }}</p>
@@ -19,7 +35,24 @@
 </div>
 
 
-    <h3>Nutritional Information (per serving)</h3>
+    <h3>Nutritional Information (per serving)
+        {% if recipe.health_stars is not none %}
+            <span class="health-stars">
+                {% for i in range(1,6) %}
+                    {% if recipe.health_stars >= i %}
+                        ★
+                    {% elif recipe.health_stars >= i - 0.5 %}
+                        ☆
+                    {% else %}
+                        ☆
+                    {% endif %}
+                {% endfor %}
+                <span class="health-stars-number">{{ "%.1f" |format(recipe.health_stars) }}</span>
+            </span>
+        {% else %}
+            <p>Health star rating unavailable</p>
+        {% endif %}
+    </h3>
 <table>
     <tr><th>Calories</th><td>{{ recipe.nutrition.calories }}</td></tr>
     <tr><th>Fat</th><td>{{ recipe.nutrition.fat }}g</td></tr>
@@ -47,7 +80,7 @@
         {% endfor %}
     </ol>
 
-    <a href="{{ url_for('recipe_bp.browse_recipes') }}">Back To Browse</a>
+    <a href="{{ url_for('recipe_bp.browse_recipes') }}" class="general-button">Back To Browse</a>
     {% if message %}
         <div class="message"{{ message }}></div>
     {% endif %}
@@ -55,9 +88,11 @@
 
     <h1>Reviews:</h1>
     {% include "recipebrowse/_reviews.html" %}
+
+    <form method="post" action="{{ url_for('recipe_bp.add_favourites', recipe_id=recipe.id) }}">
+    <button type="submit" class="general-button">Add to Favourites ❤️</button>
+    </form>
+
 </div>
 
-<form method="post" action="{{ url_for('recipe_bp.add_favourites', recipe_id=recipe.id) }}">
-    <button type="submit" class="add-to-favourite">Add to Favourites ❤️</button>
-</form>
 {% endblock %}

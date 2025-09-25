@@ -6,7 +6,6 @@ if TYPE_CHECKING:
     from recipe.domainmodel.category import Category
 
 from datetime import datetime
-
 from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.review import Review
 
