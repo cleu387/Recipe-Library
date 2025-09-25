@@ -53,6 +53,9 @@ The *project directory/.env* file contains variable settings. They are set with 
 * `TESTING`: Set to False for running the application. Overridden and set to True automatically when testing the application.
 * `WTF_CSRF_SECRET_KEY`: Secret key used by the WTForm library.
  
+
+
+
 ## Data sources
 
 The data files are modified excerpts downloaded from:

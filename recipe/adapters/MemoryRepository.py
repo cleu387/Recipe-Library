@@ -1,7 +1,9 @@
 from bisect import insort_left
 from typing import List
 
+from recipe.domainmodel.favourite import Favourite
 from recipe.domainmodel.recipe import Recipe
+from recipe.domainmodel.review import Review
 from recipe.domainmodel.user import User
 from recipe.adapters.Repository import AbstractRepository
 from pathlib import Path

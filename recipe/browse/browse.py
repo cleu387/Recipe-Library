@@ -4,7 +4,7 @@ import recipe.browse.services as services
 from recipe.browse import review_services as review_services
 from recipe.authentication.authentication import login_required
 from recipe.authentication.authentication import login_required
-
+from recipe.browse.services import calculate_health_rating
 browse_blueprint = Blueprint("recipe_bp", __name__)
 
 @browse_blueprint.route("/browse", methods=["GET"])
@@ -55,6 +55,8 @@ def recipeDescription(recipe_id):
     reviews = review_services.get_recipe_reviews(repo.repo_instance, recipe_id)
     username = session.get("username")
     user = review_services.get_user(repo.repo_instance, username)
+    recipe.health_stars = calculate_health_rating(recipe.nutrition)
+
     return render_template(
         "recipebrowse/recipeDescription.html",
         title=f"Recipe: {recipe.name}",

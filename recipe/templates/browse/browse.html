@@ -21,9 +21,10 @@
                 <a href="{{ url_for('recipe_bp.recipeDescription', recipe_id=recipe.id) }}" class="recipe-card">
                     <img src="{{ recipe.image }}" alt="{{ recipe.name }}">
                     <div class = "ft-recipe-text-">
-                        <h3>{{ recipe.name }}</h3>
+                        {{recipe.name}}
                         <p>By: {{ recipe.author }}</p>
                         <p>{{ recipe.description }}</p>
+
                     </div>
                 </a>
             {% endfor %}

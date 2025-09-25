@@ -17,6 +17,8 @@ def get_recipe(repo: AbstractRepository):
             "category": recipe.category.name if recipe.category else "",
             "image": recipe.images[0] if recipe.images else "",
             "description": recipe.description,
+            "rating": recipe.rating if recipe.rating is not None else None,
+
         }
         recipe_dicts.append(recipe_dict)
     return recipe_dicts
@@ -40,3 +42,37 @@ def add_favourite_recipe(recipe_id: int, username: str, repo: AbstractRepository
         raise UnknownUserException
 
     repo.add_favourite(user, recipe)
+
+
+def calculate_health_rating(nutrition):
+    if nutrition is None:
+        return None
+
+    score = 5
+
+    if nutrition.calories > 500:
+        score -= 1
+    if nutrition.fat > 20:
+        score -= 1
+    if nutrition.saturated_fat > 5:
+        score -= 1
+    if nutrition.cholesterol > 100:
+        score -= 1
+    if nutrition.sodium > 600:
+        score -= 1
+    if nutrition.carbohydrates > 60:
+        score -= 1
+    if nutrition.sugar > 25:
+        score -= 1
+
+    if nutrition.fiber >= 5:
+        score += 1
+    if nutrition.protein >= 10:
+        score += 1
+
+    if score > 5:
+        score = 5
+    if score < 0:
+        score = 0
+
+    return score
