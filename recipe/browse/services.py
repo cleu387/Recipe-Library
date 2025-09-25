@@ -2,6 +2,8 @@ from recipe.adapters.Repository import AbstractRepository
 from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.author import Author
 from recipe.domainmodel.nutrition import Nutrition
+from recipe.domainmodel.user import User
+from recipe.domainmodel.favourite import Favourite
 
 def get_number_of_recipes(repo: AbstractRepository):
     return repo.get_number_of_recipes()
@@ -32,6 +34,9 @@ class NonExistentRecipe(Exception):
 class UnknownUserException(Exception):
     pass
 
+class FavouriteAlreadyExists(Exception):
+    pass
+
 def add_favourite_recipe(recipe_id: int, username: str, repo: AbstractRepository):
     recipe = repo.get_recipe_by_id(recipe_id)
     if recipe is None:
@@ -41,6 +46,11 @@ def add_favourite_recipe(recipe_id: int, username: str, repo: AbstractRepository
     if user is None:
         raise UnknownUserException
 
+    favourites = repo.get_favourites(user)
+
+    for fav in favourites:
+        if fav.user.id == user.id and fav.recipe.id == recipe.id:
+            raise FavouriteAlreadyExists("The user has already favourite this recipe!")
     repo.add_favourite(user, recipe)
 
 

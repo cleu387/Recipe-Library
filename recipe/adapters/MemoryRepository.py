@@ -75,8 +75,8 @@ class MemoryRepository(AbstractRepository):
                 user.remove_favourite_recipe(favourite)
                 return
 
-    def get_favourites(self, user: User) -> List[Recipe]:
-        return [recipe.recipe for recipe in self.__favourites if recipe.user == user]
+    def get_favourites(self, user: User) -> List[Favourite]:
+        return [recipe for recipe in self.__favourites if recipe.user == user]
 
 
 def populate(repo: AbstractRepository):

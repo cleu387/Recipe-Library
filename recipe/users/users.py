@@ -3,7 +3,8 @@ import recipe.adapters.Repository as repo
 
 from recipe.authentication.authentication import login_required
 import recipe.users.services as services
-import recipe.home.services as use1
+from recipe.domainmodel.favourite import Favourite
+
 
 users_blueprint = Blueprint("users_bp", __name__)
 
@@ -11,9 +12,8 @@ users_blueprint = Blueprint("users_bp", __name__)
 @login_required
 def profile():
     username = session.get("username")
-    favourites = services.get_favourites(username, repo.repo_instance)
-    """recipes = [use1.get_random_recipe(repo.repo_instance) for _ in range(9)]"""
-
+    favourites_list = services.get_favourites(username, repo.repo_instance)
+    favourites = [favourite.recipe for favourite in favourites_list]
     return render_template(
         "users/profile.html",
         recipes=favourites

@@ -4,7 +4,8 @@ import recipe.browse.services as services
 from recipe.browse import review_services as review_services
 from recipe.authentication.authentication import login_required
 from recipe.authentication.authentication import login_required
-from recipe.browse.services import calculate_health_rating
+from recipe.browse.services import calculate_health_rating, FavouriteAlreadyExists
+
 browse_blueprint = Blueprint("recipe_bp", __name__)
 
 @browse_blueprint.route("/browse", methods=["GET"])
@@ -69,7 +70,11 @@ def recipeDescription(recipe_id):
 @login_required
 def add_favourites(recipe_id):
     username = session['username']
-    services.add_favourite_recipe(recipe_id, username, repo.repo_instance)
+    try:
+        services.add_favourite_recipe(recipe_id, username, repo.repo_instance)
+    except FavouriteAlreadyExists as e:
+        message = str(e)
+
     return redirect(
         url_for('recipe_bp.recipeDescription', recipe_id=recipe_id)
     )

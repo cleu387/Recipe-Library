@@ -1,7 +1,7 @@
 from flask import session
 
 from recipe.adapters.Repository import AbstractRepository
-from recipe.domainmodel.recipe import Recipe
+from recipe.domainmodel.favourite import Favourite
 
 class NonExistentRecipe(Exception):
     pass
@@ -11,7 +11,7 @@ class UnknownUserException(Exception):
 
 
 
-def get_favourites(username: str, repo: AbstractRepository) -> list[Recipe]:
+def get_favourites(username: str, repo: AbstractRepository) -> list[Favourite]:
     user = repo.get_user(username)
     if user is None:
         raise UnknownUserException
