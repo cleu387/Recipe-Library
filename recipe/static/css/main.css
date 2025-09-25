@@ -394,10 +394,6 @@ input[type="submit"]:hover {
 }
 
 /* Profile CSS */
-.profile{
-    padding: 10px;
-}
-
 .favourite-recipes{
     position: relative;
     display: flex;

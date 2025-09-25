@@ -53,7 +53,10 @@ The *project directory/.env* file contains variable settings. They are set with 
 * `TESTING`: Set to False for running the application. Overridden and set to True automatically when testing the application.
 * `WTF_CSRF_SECRET_KEY`: Secret key used by the WTForm library.
  
-
+## Health Star Calculation
+Health stars are calculated by setting a default score of 5/5. each nutritional value is checked and if they are greater than a certain limit, one point is removed from the overall score these values include:
+calories > 500, fat > 20, saturated fat > 5, cholesterol > 100, sodium > 600, carbohydrates > 60 and sugar > 25.
+points are added to the total score if fibre >= 5 and or protein >= 10
 
 
 ## Data sources
