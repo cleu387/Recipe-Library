@@ -410,7 +410,7 @@ input[type="submit"]:hover {
 
 .favourite-recipes .recipe-card{
     width: 350px;
-    height: 350px;
+    height: 400px;
     flex-shrink: 0;
 }
 
