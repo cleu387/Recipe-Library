@@ -2,7 +2,13 @@
 from datetime import datetime
 from flask import Flask, render_template
 import recipe.adapters.Repository as repo
-from recipe.adapters.MemoryRepository import MemoryRepository, populate
+from recipe.adapters.MemoryRepository import MemoryRepository
+from recipe.adapters import database_repository, populate
+from recipe.adapters.orm import metadata, map_model_to_tables, mapper_registry
+
+from sqlalchemy import create_engine, inspect
+from sqlalchemy.orm import sessionmaker, clear_mappers
+from sqlalchemy.pool import NullPool
 
 
 
@@ -27,10 +33,42 @@ def create_app():
         from .users import users
         app.register_blueprint(users.users_blueprint)
 
-    repo.repo_instance = MemoryRepository()
-    populate(repo.repo_instance)
+    if app.config['REPOSITORY'] == 'memory':
+        repo.repo_instance = MemoryRepository()
+        populate.populate(repo.repo_instance, False)
+
+    elif app.config['REPOSITORY'] == 'database':
+        database_uri = app.config['SQLALCHEMY_DATABASE_URI']
+        database_echo = app.config['SQLALCHEMY_ECHO']
+        database_engine = create_engine(database_uri,
+                                        connect_args={'check_same_thread': False},
+                                        poolclass=NullPool, echo=database_echo)
+
+        session_factory = sessionmaker(autocommit=False, autoflush=True, bind=database_engine)
+        repo.repo_instance = database_repository.SqlAlchemyRepository(session_factory)
+
+        if app.config['TESTING'] or len(inspect(database_engine).get_table_names()) == 0:
+            print("REPOPULATING DATABASE...")
+            clear_mappers()
+
+            metadata.drop_all(database_engine)
+
+            map_model_to_tables()
+            metadata.create_all(database_engine)
+            populate.populate(repo.repo_instance, True)
+            print("REPOPULATING DATABASE... FINISHED")
+        else:
+            map_model_to_tables()
 
 
+    @app.before_request
+    def before_flask_http_request_function():
+        if isinstance(repo.repo_instance, database_repository.SqlAlchemyRepository):
+            repo.repo_instance.reset_session()
 
+    @app.teardown_request
+    def shutdown_session(exception=None):
+        if isinstance(repo.repo_instance, database_repository.SqlAlchemyRepository):
+            repo.repo_instance.close_session()
 
     return app

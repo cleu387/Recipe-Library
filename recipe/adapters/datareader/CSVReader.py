@@ -16,13 +16,20 @@ class CSVReader:
         with open(self.__filepath, newline="") as csvfile:
             reader = csv.reader(csvfile)
             line_count = 0
+            authors = {}
             for row in reader:
                 if line_count == 0:
                     line_count += 1
                 else:
                     recipeId = int(row[0])
                     recipeName = row[1]
-                    author = Author(int(row[2]), row[3])
+
+                    author_id, author_name = int(row[2]), row[3]
+                    if author_id in authors:
+                        author = authors[author_id]
+                    else:
+                        author = Author(author_id, author_name)
+                        authors[author.id] = author
                     cook_time = int(row[4])
                     preparation_time = int(row[5])
                     date = parser.parse(row[7])
@@ -38,3 +45,13 @@ class CSVReader:
                     recipe = Recipe(recipeId, recipeName, author, cook_time, preparation_time, date, description, images, category,
                                     ingredient_quantity, ingredients,None, nutrition, servings, recipe_yield, instructions)
                     yield recipe
+
+
+
+def check_author(session, author_id, author_name):
+    author = session.query(Author).filter(Author.id == author_id).one_or_none()
+    if author is None:
+        author = Author(author_id, author_name)
+        session.add(author)
+        session.flush()
+    return author

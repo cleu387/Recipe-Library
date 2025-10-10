@@ -1,0 +1,32 @@
+<div class="pagination">
+    {% if page > 1 %}
+        <a href="{{ url_for(endpoint, page=page-1, search=search_query, search_type=search_type) }}">Previous</a>
+    {% endif %}
+
+    {% if page > 6 %}
+        <a href="{{ url_for(endpoint, page=1, search=search_query, search_type=search_type) }}">1</a>
+        {% if page > 7 %}
+            <span>...</span>
+        {% endif %}
+    {% endif %}
+
+    {% set start = page - 5 if page - 5 > 0 else 1  %}
+    {% set end = page + 5 if page + 5 <= total_pages else total_pages %}
+
+    {% for p in range(start, end + 1) %}
+        <a href="{{ url_for(endpoint, page=p, search=search_query, search_type=search_type) }}" class="{% if p == page %}active{% endif %}">
+            {{ p }}
+        </a>
+    {% endfor %}
+
+    {% if page < total_pages - 5 %}
+        {% if page < total_pages - 6 %}
+            <span>...</span>
+        {% endif %}
+        <a href="{{ url_for(endpoint, page=total_pages, search=search_query, search_type=search_type) }}">{{ total_pages }}</a>
+    {% endif %}
+
+    {% if page < total_pages %}
+        <a href="{{ url_for(endpoint, page=page+1,search=search_query, search_type=search_type) }}">Next</a>
+    {% endif %}
+</div>

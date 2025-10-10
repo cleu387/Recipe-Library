@@ -6,8 +6,6 @@ from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.review import Review
 from recipe.domainmodel.user import User
 from recipe.adapters.Repository import AbstractRepository
-from pathlib import Path
-from recipe.adapters.datareader.CSVReader import CSVReader
 from recipe.domainmodel.review import Review
 
 class MemoryRepository(AbstractRepository):
@@ -80,11 +78,4 @@ class MemoryRepository(AbstractRepository):
         return [recipe for recipe in self.__favourites if recipe.user == user]
 
 
-def populate(repo: AbstractRepository):
-    BASE_DIR = Path(__file__).resolve().parent
-    filepath = BASE_DIR.parent / "adapters" / "datareader" / "data" / "recipes.csv"
-    reader = CSVReader(str(filepath))
-    data = reader.get_data()
-    for recipe in data:
-        repo.add_recipe(recipe)
 

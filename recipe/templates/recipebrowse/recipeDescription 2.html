@@ -1,0 +1,98 @@
+{% extends 'layout.html' %}
+{% block title %}{{ super() }} | {{ title }}{%  endblock %}
+
+
+{% block content %}
+<div class="recipe-image">
+        <img src="{{ recipe.images[0] }}" alt="Image of {{ recipe.name }}">
+</div>
+<div class = "whole-recipe-layout">
+<div class="recipe-layout">
+    <div class="recipe-info">
+    <h1>
+        {{ recipe.name }}
+        {% if recipe.rating is not none %}
+            <span class="rating-stars">
+                {% for i in range(1, 6) %}
+                    {% if recipe.rating >= i %}
+                        ★
+                    {% else %}
+                        ☆
+                    {% endif %}
+                {% endfor %}
+                <span class="rating-number">({{ "%.1f"|format(recipe.rating) }})</span>
+            </span>
+        {% else %}
+            <span class="rating-inline no-rating">No ratings</span>
+        {% endif %}
+    </h1>
+    <p><strong>Author: </strong>{{ recipe.author.name }}</p>
+    <p><strong>Description: </strong>{{ recipe.description }}</p>
+    <p><strong>Category: </strong>{{ recipe.category.name }}</p>
+    <p><strong>Preparation Time: </strong>{{ recipe.preparation_time }} minutes</p>
+    <p><strong>Cooking Time: </strong>{{ recipe.cook_time }} minutes</p>
+    </div>
+</div>
+
+
+    <h3>Nutritional Information (per serving)
+        {% if recipe.health_stars is not none %}
+            <span class="health-stars">
+                {% for i in range(1,6) %}
+                    {% if recipe.health_stars >= i %}
+                        ★
+                    {% elif recipe.health_stars >= i - 0.5 %}
+                        ☆
+                    {% else %}
+                        ☆
+                    {% endif %}
+                {% endfor %}
+                <span class="health-stars-number">{{ "%.1f" |format(recipe.health_stars) }}</span>
+            </span>
+        {% else %}
+            <p>Health star rating unavailable</p>
+        {% endif %}
+    </h3>
+<table>
+    <tr><th>Calories</th><td>{{ recipe.nutrition.calories }}</td></tr>
+    <tr><th>Fat</th><td>{{ recipe.nutrition.fat }}g</td></tr>
+    <tr><th>Saturated Fat</th><td>{{ recipe.nutrition.saturated_fat }}g</td></tr>
+    <tr><th>Cholesterol</th><td>{{ recipe.nutrition.cholesterol }}mg</td></tr>
+    <tr><th>Sodium</th><td>{{ recipe.nutrition.sodium }}mg</td></tr>
+    <tr><th>Carbohydrates</th><td>{{ recipe.nutrition.carbohydrates }}g</td></tr>
+    <tr><th>Fiber</th><td>{{ recipe.nutrition.fiber }}g</td></tr>
+    <tr><th>Sugar</th><td>{{ recipe.nutrition.sugar }}g</td></tr>
+    <tr><th>Protein</th><td>{{ recipe.nutrition.protein }}g</td></tr>
+</table>
+
+
+    <h3>Ingredients</h3>
+    <ul>
+        {% for ingredients in recipe.ingredients %}
+            <li>{{ ingredients }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Instructions</h3>
+    <ol>
+        {% for step in recipe.instructions %}
+            <li>{{ step }}</li>
+        {% endfor %}
+    </ol>
+
+    <a href="{{ url_for('recipe_bp.browse_recipes') }}" class="general-button">Back To Browse</a>
+    {% if message %}
+        <div class="message"{{ message }}></div>
+    {% endif %}
+
+
+    <h1>Reviews:</h1>
+    {% include "recipebrowse/_reviews.html" %}
+
+    <form method="post" action="{{ url_for('recipe_bp.add_favourites', recipe_id=recipe.id) }}">
+    <button type="submit" class="general-button">Add to Favourites ❤️</button>
+    </form>
+
+</div>
+
+{% endblock %}
