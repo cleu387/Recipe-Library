@@ -3,11 +3,10 @@ import random
 import recipe.adapters.Repository as repo
 import recipe.browse.services as browse_services
 import recipe.home.services as home_services
-import recipe.browse.services as browse_services
-import recipe.home.services as home_services
 import recipe.users.services as users_services
 from recipe.authentication import services as auth_services
-from recipe.adapters.MemoryRepository import MemoryRepository, populate
+from recipe.adapters.MemoryRepository import MemoryRepository
+from recipe.adapters import populate
 from recipe.authentication.services import InvalidException
 from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.author import Author
@@ -17,7 +16,7 @@ from recipe.domainmodel.recipe import Recipe
 @pytest.fixture
 def repository():
     repo.repo_instance = MemoryRepository()
-    populate(repo.repo_instance)
+    populate.populate(repo.repo_instance, False)
     return repo.repo_instance
 
 def test_get_number_of_recipes(repository):
@@ -27,7 +26,6 @@ def test_get_number_of_recipes(repository):
     assert browse_services.get_number_of_recipes(repository) == length
 
 def test_get_recipe(repository):
-    recipe_dicts = browse_services.get_recipe(repository)
     recipe_dicts = browse_services.get_recipe(repository)
     # Tests that the return value exists and has the right parameters
     assert recipe_dicts is not None
@@ -53,7 +51,6 @@ def test_get_recipe_by_id_not_found():
         browse_services.get_recipe_by_id(recipe_id, mem_repo)
 
 def test_get_random_recipe(repository):
-    recipe_dicts = home_services.get_recipe(repository)
     # Tests that get random recipe does in fact return a random recipe
     import random
     recipes = repository.get_recipe()

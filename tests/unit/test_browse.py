@@ -1,12 +1,13 @@
 import pytest
 
-from recipe.adapters.MemoryRepository import MemoryRepository, populate
+from recipe.adapters.MemoryRepository import MemoryRepository
+from recipe.adapters import populate
 import recipe.adapters.Repository as repo
 
 
 
 repo.repo_instance = MemoryRepository()
-populate(repo.repo_instance)
+populate.populate(repo.repo_instance, False)
 
 
 

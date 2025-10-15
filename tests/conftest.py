@@ -1,6 +1,7 @@
 import pytest
 from recipe import create_app
-from recipe.adapters.MemoryRepository import MemoryRepository, populate
+from recipe.adapters.MemoryRepository import MemoryRepository
+from recipe.adapters import populate
 import recipe.adapters.Repository as repo
 
 #create a test client with an in-memory repository and test data for isolated testing
@@ -11,7 +12,7 @@ def client():
     app.config["WTF_CSRF_ENABLED"] = False
 
     repo.repo_instance = MemoryRepository()
-    populate(repo.repo_instance)
+    populate.populate(repo.repo_instance, False)
 
     with app.test_client() as client:
         yield client

@@ -1,6 +1,7 @@
 import pytest
 import recipe.adapters.Repository as repository
-from recipe.adapters.MemoryRepository import MemoryRepository, populate
+from recipe.adapters.MemoryRepository import MemoryRepository
+from recipe.adapters import populate
 import recipe.browse.review_services as services
 import recipe.authentication.services as auth_services
 from recipe.domainmodel.review import Review
@@ -10,7 +11,7 @@ from recipe.domainmodel.user import User
 @pytest.fixture
 def repo():
     repository.repo_instance = MemoryRepository()
-    populate(repository.repo_instance)
+    populate.populate(repository.repo_instance, False)
     return repository.repo_instance
 
 def test_get_no_reviews(client):
