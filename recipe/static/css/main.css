@@ -130,8 +130,8 @@ header{
 .recipe-card{
     position: relative;
     background-color: white;
-    width: 450px;
-    height: 550px;
+    width: 350px;
+    height: 450px;
     border-radius: 20px;
     text-align: left;
     text-decoration: none;
@@ -271,6 +271,9 @@ input[type="submit"]:hover {
 }
 
 /* Browse page CSS */
+.recipes-block{
+    padding: 40px;
+}
 .recipe-table {
     margin: 20px auto;
     border-collapse: collapse;
