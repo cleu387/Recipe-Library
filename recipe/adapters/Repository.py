@@ -63,7 +63,6 @@ class AbstractRepository(abc.ABC):
 
 
     #region Recipe_data
-
     @abc.abstractmethod
     def add_recipe(self, recipe: Recipe):
         """ Add recipe to recipe repository """
