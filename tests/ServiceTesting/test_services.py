@@ -6,7 +6,7 @@ import recipe.home.services as home_services
 import recipe.users.services as users_services
 from recipe.authentication import services as auth_services
 from recipe.adapters.MemoryRepository import MemoryRepository
-from recipe.adapters import populate
+from recipe.adapters.populate import populate
 from recipe.authentication.services import InvalidException
 from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.author import Author
@@ -16,7 +16,7 @@ from recipe.domainmodel.recipe import Recipe
 @pytest.fixture
 def repository():
     repo.repo_instance = MemoryRepository()
-    populate.populate(repo.repo_instance, False)
+    populate(repo.repo_instance, False)
     return repo.repo_instance
 
 def test_get_number_of_recipes(repository):
@@ -68,9 +68,89 @@ def test_can_add_user(repository):
 
     auth_services.add_user(new_username, new_password, repository)
 
+    user_as_dict = auth_services.get_user(new_username, repository)
+    assert user_as_dict['username'] == new_username
 
+    # Check that password has been encrypted.
+    assert user_as_dict['password'].startswith('scrypt:')
 
+def test_cannot_add_user_with_existing_name(repository):
+    username = 'Edwin'
+    password = 'EdwinNoLikeCooking101'
 
+    auth_services.add_user(username, password, repository)
+
+    with pytest.raises(auth_services.NameNotUniqueException):
+        auth_services.add_user(username, password, repository)
+
+def test_authentication_with_valid_credentials(repository):
+    new_username = 'Edwin'
+    new_password = 'EdwinNoLikeCooking101'
+
+    auth_services.add_user(new_username, new_password, repository)
+
+    try:
+        auth_services.authenticate_user(new_username, new_password, repository)
+
+    except InvalidException:
+        assert False
+
+def test_authentication_with_invalid_credentials(repository):
+    new_username = 'Edwin'
+    new_password = 'EdwinNoLikeCooking101'
+
+    auth_services.add_user(new_username, new_password, repository)
+
+    with pytest.raises(auth_services.InvalidException):
+        auth_services.authenticate_user(new_username, 'NotARealPassword123', repository)
+
+def test_add_favourites(repository):
+    new_username = 'Edwin'
+    new_password = 'EdwinNoLikeCooking101'
+
+    auth_services.add_user(new_username, new_password, repository)
+    test_recipe = repository.get_recipe()[0]
+
+    browse_services.add_favourite_recipe(test_recipe.id, new_username, repository)
+    favourite = repository.get_user(new_username).favourite_recipes
+    favourite_recipes = [fav.recipe for fav in favourite]
+    assert test_recipe in favourite_recipes
+
+def test_get_favourites(repository):
+    new_username = 'Edwin'
+    new_password = 'EdwinNoLikeCooking101'
+
+    auth_services.add_user(new_username, new_password, repository)
+    test_recipe1 = repository.get_recipe()[0]
+    test_recipe2 = repository.get_recipe()[1]
+
+    browse_services.add_favourite_recipe(test_recipe1.id, new_username, repository)
+    browse_services.add_favourite_recipe(test_recipe2.id, new_username, repository)
+
+    favourite = users_services.get_favourites(new_username, repository)
+    favourite_recipes = [fav.recipe for fav in favourite]
+    assert test_recipe1 in favourite_recipes
+    assert test_recipe2 in favourite_recipes
+    assert test_recipe1 != test_recipe2
+    assert isinstance(favourite_recipes, list)
+
+def test_remove_favourites(repository):
+    new_username = 'Edwin'
+    new_password = 'EdwinNoLikeCooking101'
+
+    auth_services.add_user(new_username, new_password, repository)
+    test_recipe1 = repository.get_recipe()[0]
+    test_recipe2 = repository.get_recipe()[1]
+
+    browse_services.add_favourite_recipe(test_recipe1.id, new_username, repository)
+    browse_services.add_favourite_recipe(test_recipe2.id, new_username, repository)
+
+    users_services.remove_favourite_recipe(test_recipe1.id, new_username, repository)
+    favourite = users_services.get_favourites(new_username, repository)
+    favourite_recipes = [fav.recipe for fav in favourite]
+    assert test_recipe1 not in favourite_recipes
+    assert test_recipe2 in favourite_recipes
+    assert isinstance(favourite, list)
 
 
 

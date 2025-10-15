@@ -1,7 +1,7 @@
 import pytest
 import os
 from recipe.adapters.MemoryRepository import MemoryRepository
-from recipe.adapters import populate
+from recipe.adapters.populate import populate
 from recipe.domainmodel.favourite import Favourite
 from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.author import Author
@@ -12,7 +12,7 @@ from recipe.domainmodel.user import User
 @pytest.fixture
 def memory_repository():
     mem_repo = MemoryRepository()
-    populate.populate(mem_repo, False)
+    populate(mem_repo, False)
     return mem_repo
 
 def test_get_recipe(memory_repository):

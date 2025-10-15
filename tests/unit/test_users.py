@@ -1,11 +1,12 @@
 import pytest
-from recipe.adapters.MemoryRepository import MemoryRepository, populate
+from recipe.adapters.MemoryRepository import MemoryRepository
+from recipe.adapters.populate import populate
 import recipe.adapters.Repository as repository
 
 @pytest.fixture
 def repo():
     repository.repo_instance = MemoryRepository()
-    populate(repository.repo_instance)
+    populate(repository.repo_instance, False)
     return repository.repo_instance
 
 def test_profile_requires_login(client):
