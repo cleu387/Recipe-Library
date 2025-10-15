@@ -5,7 +5,7 @@ from sqlalchemy.orm import registry, relationship
 from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.nutrition import Nutrition
 
-# from recipe.domainmodel.recipe_image import RecipeImage
+from recipe.domainmodel.recipe_image import RecipeImage
 from recipe.domainmodel.author import Author
 
 # Global variable giving access to the MetaData (schema) information of the database
@@ -17,8 +17,6 @@ author_table = Table(
     Column("id", Integer, primary_key=True),
     Column("name", String(255), nullable=False),
 )
-
-
 
 # Nutrition table
 nutrition_table = Table(
@@ -81,7 +79,7 @@ def map_model_to_tables():
         '_Recipe__author': relationship(Author, back_populates='_Author__recipes')
     })
 
-    """
+
     # RecipeImage mapping
     mapper_registry.map_imperatively(RecipeImage, recipe_images_table, properties={
         '_RecipeImage__id': recipe_images_table.c.id,
@@ -89,7 +87,7 @@ def map_model_to_tables():
         '_RecipeImage__url': recipe_images_table.c.url,
         '_RecipeImage__position': recipe_images_table.c.position
     }) 
-    """
+
 
     # Author mapping
     mapper_registry.map_imperatively(Author, author_table, properties={
