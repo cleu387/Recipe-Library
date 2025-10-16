@@ -20,6 +20,7 @@ def populate(repo: AbstractRepository, database_mode : bool):
 
             repo.add_multiple_recipe_images(reader.dataset_of_recipe_images)
             repo.add_multiple_recipe_ingredients(reader.dataset_of_recipe_ingredients)
+            repo.add_multiple_recipe_instructions(reader.dataset_of_recipe_instructions)
     else:
         for recipe in reader.dataset_of_recipes:
             repo.add_recipe(recipe)

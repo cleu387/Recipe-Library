@@ -126,9 +126,13 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             scm.commit()
 
     def get_recipe(self) -> list[Recipe]:
-        with self._session_cm as scm:
-            return scm.session.query(Recipe).all()
+        query = self._session_cm.session.query(Recipe)
 
+        recipes = query.all()
+        # Populate all recipes with related data
+        for recipe in recipes:
+            self._populate_recipe_data(recipe)
+        return recipes
 
     def get_all_recipe_id(self) -> list[int]:
         with self._session_cm as scm:
@@ -155,10 +159,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
     # region Review_data
     def add_review(self, review: Review):
-        with self._session_cm as scm:
-            with scm.session.no_autoflush:
-                scm.session.merge(review)
-            scm.commit()
+        pass
 
     def get_recipe_reviews(self, recipe_id: int):
         pass
@@ -169,27 +170,58 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
     # region User_data
     def add_user(self, user: User):
+        if not isinstance(user, User):
+            raise TypeError("Expected a User instance")
+
         with self._session_cm as scm:
             with scm.session.no_autoflush:
                 scm.session.merge(user)
             scm.commit()
 
     def get_user(self, username: str) -> User:
-        pass
+        user = None
+        try:
+            query = self._session_cm.session.query(User).filter(
+                User._User__username == username)
+            user = query.one()
+            # Populate the recipe with related data for consistent domain model interface
+
+        except NoResultFound:
+            print(f'User {username} was not found')
+
+        return user
 
     # endregion
 
 
     # region Favourite_data
 
-    def add_favourite(self, user: User, recipe: Recipe) -> Favourite:
-        pass
+    def add_favourite(self, user: User, recipe: Recipe):
+        favourite = Favourite(
+            favourite_id=None,
+            user=user,
+            recipe=recipe
+        )
+        with self._session_cm as scm:
+            with scm.session.no_autoflush:
+                scm.session.add(favourite)
+            scm.commit()
 
     def remove_favourite(self, user: User, recipe: Recipe):
-        pass
+        with self._session_cm as scm:
+            with scm.session.no_autoflush:
+                favourite = scm.session.query(Favourite).filter_by(
+                    _Favourite__user=user,
+                    _Favourite__recipe=recipe
+                ).first()
+
+                if favourite:
+                    scm.session.delete(favourite)
 
     def get_favourites(self, user: User) -> List[Favourite]:
-        pass
+        with self._session_cm as scm:
+            return scm.session.query(Favourite).filter_by(_Favourite__user_id=user.id).all()
+
 
     # endregion
 
@@ -230,8 +262,19 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
         if recipe_ingredients:
             recipe._Recipe__ingredients = recipe_ingredients.all()
+        else:
+            print(f"DEBUG: No ingredients found for recipe {recipe.id}")
 
-        # TODO: Load and populate instructions
+        # Load and populate instructions
+        recipe_instructions= session.query(RecipeInstruction).filter(
+            RecipeInstruction._RecipeInstruction__recipe_id == recipe.id
+        )
+
+        if recipe_instructions:
+            instructions = [instruction.step for instruction in recipe_instructions]
+            recipe._Recipe__instructions = instructions
+        else:
+            print(f"DEBUG: No instruction found for recipe {recipe.id}")
 
 
     # region RecipeImage Methods
@@ -245,10 +288,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             scm.commit()
 
     def get_recipe_images(self, recipe_id: int) -> List[RecipeImage]:
-        recipe_image = self._session_cm.session.query(RecipeImage).get(recipe_id)
-        if recipe_image is None:
-            raise ValueError(f"RecipeImage with id {recipe_id} not found")
-        return recipe_image
+        pass
 
     # endregion
 
@@ -274,7 +314,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
     def add_multiple_recipe_instructions(self, recipe_instructions: List[RecipeInstruction]):
         with self._session_cm as scm:
             for recipe_instruction in recipe_instructions:
-                scm.session.add(recipe_instructions)
+                scm.session.add(recipe_instruction)
             scm.commit()
 
     def get_recipe_instructions(self, recipe_id: int) -> List[RecipeInstruction]:
