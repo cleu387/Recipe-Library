@@ -67,7 +67,6 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
     def get_authors(self) -> List[Author]:
         pass
 
-
     def get_number_of_authors(self) -> int:
         pass
 
@@ -88,7 +87,6 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
     def add_category(self, category: Category):
         pass
-
 
     def get_categories(self) -> List[Category]:
         pass

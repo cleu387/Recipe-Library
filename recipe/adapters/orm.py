@@ -63,6 +63,16 @@ recipe_images_table = Table(
     Column('position', Integer, nullable=False)
 )
 
+# Recipe ingredient table
+recipe_ingredients_table = Table(
+    'recipe_ingredients', mapper_registry.metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('recipe_id', Integer, ForeignKey('recipes.id'), nullable=False),
+    Column('quantity', String(255), nullable=False),
+    Column('ingredient', String(255), nullable=False),
+    Column('position', Integer, nullable=False)
+)
+
 
 # ORM Mappings
 def map_model_to_tables():
@@ -114,3 +124,11 @@ def map_model_to_tables():
         '_RecipeImage__position': recipe_images_table.c.position
     })
 
+    # RecipeIngredient mapping
+    mapper_registry.map_imperatively(RecipeIngredient, recipe_ingredients_table, properties={
+        '_RecipeIngredient__id': recipe_ingredients_table.c.id,
+        '_RecipeIngredient__recipe_id': recipe_ingredients_table.c.recipe_id,
+        '_RecipeIngredient__quantity': recipe_ingredients_table.c.quantity,
+        '_RecipeIngredient__ingredient': recipe_ingredients_table.c.ingredient,
+        '_RecipeIngredient__position': recipe_ingredients_table.c.position
+    })
