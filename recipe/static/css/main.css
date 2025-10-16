@@ -412,6 +412,7 @@ input[type="submit"]:hover {
 }
 
 .favourite-recipes .recipe-card{
+    position: relative;
     width: 350px;
     height: 400px;
     flex-shrink: 0;
@@ -423,18 +424,25 @@ input[type="submit"]:hover {
 
 .delete-favourite {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background: none;
-    border: none;
+    bottom: 20px;
+    right: 15px;
+    background: red;
+    border-radius: 5px;
+    border-color: red;
     font-size: 1.5rem;
     cursor: pointer;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    z-index: 3;
+    transition: opacity 0.2s ease, transform 0.2s ease, z-index 0s linear 0.2s;
 }
 
-.recipe-card:hover .delete-favourite{
+.favourite-recipes .recipe-card:hover .delete-favourite{
     opacity: 1;
+}
+
+.favourite-recipes .recipe-card .delete-favourite:hover{
+    transform: translateY(-5px);
+    z-index:4;
 }
 
 /* Recipe description CSS */
