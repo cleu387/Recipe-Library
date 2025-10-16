@@ -1,10 +1,10 @@
 from abc import ABC
 from typing import List, Type
-
+from recipe.adapters.orm import recipes_table, author_table, categories_table
 from sqlalchemy import func
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm.exc import NoResultFound
-
+from sqlalchemy import or_, func
 from recipe.adapters.Repository import AbstractRepository
 from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.author import Author
@@ -267,31 +267,36 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
         if recipe_images:
             image_urls = [img.url for img in recipe_images]
-            recipe._Recipe__images = image_urls
+            recipe.images = image_urls
         else:
-            print(f"DEBUG: No images found for recipe {recipe.id}")
+            recipe.images = []
 
         # Load and populate ingredients
         recipe_ingredients = session.query(RecipeIngredient).filter(
             RecipeIngredient._RecipeIngredient__recipe_id == recipe.id
-        )
+        ).order_by(RecipeIngredient._RecipeIngredient__position).all()
 
         if recipe_ingredients:
-            recipe._Recipe__ingredients = recipe_ingredients.all()
+            recipe._Recipe_ingredients = [ingredients for ingredients in recipe_ingredients]
+            recipe._Recipe_ingredients_quantities = [ingredients.quantity for ingredients in recipe_ingredients]
         else:
-            print(f"DEBUG: No ingredients found for recipe {recipe.id}")
+            recipe._Recipe_ingredients = []
+            recipe._Recipe_ingredients_quantities = []
 
         # Load and populate instructions
         recipe_instructions= session.query(RecipeInstruction).filter(
             RecipeInstruction._RecipeInstruction__recipe_id == recipe.id
-        )
+        ).order_by(RecipeInstruction._RecipeInstruction__position).all()
 
         if recipe_instructions:
             instructions = [instruction.step for instruction in recipe_instructions]
-            recipe._Recipe__instructions = instructions
+            recipe.instructions = instructions
         else:
-            print(f"DEBUG: No instruction found for recipe {recipe.id}")
-
+            recipe.instructions = []
+        if recipe.nutrition is None:
+            nutrition_obj = session.query(Nutrition).filter(Nutrition._Nutrition__id == recipe.nutrition.id).first()
+            if nutrition_obj:
+                recipe.nutrition = nutrition_obj
 
     # region RecipeImage Methods
     def add_recipe_image(self, recipe_image: RecipeImage):
@@ -337,3 +342,65 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         pass
 
     # endregion
+
+    #region RecipeSearch Methods
+    def get_recipes(self, search_query=None, search_type="name",page=1, per_page=20):
+        session = self._session_cm.session
+        query = session.query(Recipe)
+
+        if search_query:
+            search_query_lower = f"%{search_query.lower()}%"
+            if search_type == "name":
+                query = query.filter(func.lower(Recipe._Recipe__name).like(search_query_lower))
+            elif search_type == "author":
+                query = query.join(Recipe._Recipe__author).filter(func.lower(Author._Author__name).like(search_query_lower))
+            elif search_type == "category":
+                query = query.join(Recipe._Recipe__category).filter(func.lower(Category._Category__name).like(search_query_lower))
+            elif search_type == "id":
+                try:
+                    search_id = int(search_query)
+                    query = query.filter(Recipe._Recipe__id == search_id)
+                except ValueError:
+                    query = query.filter(False)
+
+        query = query.limit(per_page).offset((page - 1) * per_page)
+        recipes_orm = query.all()
+        recipes = []
+        for r in recipes_orm:
+            recipe_domain = Recipe(
+                recipe_id = r._Recipe__id,
+                name = r._Recipe__name,
+                author = r._Recipe__author,
+                description = r._Recipe__description,
+                images = [],
+                category = r._Recipe__category,
+                rating = r._Recipe__rating,
+                nutrition = r._Recipe__nutrition,
+                instructions = []
+            )
+
+            self._populate_recipe_data_in_session(recipe_domain, session)
+            recipes.append(recipe_domain)
+
+        return recipes
+
+
+    def get_recipe_count(self, search_query=None, search_type="name"):
+        session = self._session_cm.session
+        query = session.query(func.count(recipes_table.c.id))
+        if search_query:
+            search_query_lower = f"%{search_query.lower()}%"
+            if search_type == "name":
+                query = query.filter(func.lower(Recipe._Recipe__name).like(search_query_lower))
+            elif search_type == "author":
+                query = query.join(Recipe._Recipe__author).filter(
+                    func.lower(Author._Author__name).like(search_query_lower))
+            elif search_type == "category":
+                query = query.join(Recipe._Recipe__category).filter(
+                    func.lower(Category._Category__name).like(search_query_lower))
+            elif search_type == "id":
+                if search_query.strip("%").isdigit():
+                    query = query.filter(Recipe._Recipe__id == int(search_query.strip("%")))
+        return query.count()
+
+    #end region

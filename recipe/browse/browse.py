@@ -15,39 +15,19 @@ def browse_recipes():
     search_query = request.args.get("search", "").strip().lower()
     search_type = request.args.get("search_type", "name")
 
-    num_recipes = services.get_number_of_recipes(repo.repo_instance)
-    all_recipes = services.get_recipe(repo.repo_instance)
-
-    if search_query:
-        if search_type == "name":
-            all_recipes = [r for r in all_recipes if search_query in r["name"].lower()]
-        elif search_type == "author":
-            all_recipes = [r for r in all_recipes if search_query in r["author"].lower()]
-        elif search_type == "category":
-            all_recipes = [r for r in all_recipes if search_query in (r.get("category") or "").lower()]
-        elif search_type == "id":
-            try:
-                search_id = int(search_query)
-                all_recipes = [r for r in all_recipes if r["id"] == search_id]
-            except ValueError:
-                all_recipes = []
-
-    num_recipes = len(all_recipes)
-
-    start = (page - 1) * per_page
-    end = start + per_page
-    recipes_on_page = all_recipes[start:end]
+    recipes_on_page = services.get_recipe(repo.repo_instance, search_query, search_type, page, per_page)
+    num_recipes = services.get_number_of_recipes(repo.repo_instance, search_query, search_type)
     total_pages = (num_recipes + per_page - 1) // per_page
 
     return render_template(
         "browse/browse.html",
-        recipes=recipes_on_page,
-        num_recipes=num_recipes,
-        page=page,
-        total_pages=total_pages,
-        endpoint="recipe_bp.browse_recipes",
-        search_query=search_query,
-        search_type=search_type,
+        recipes = recipes_on_page,
+        num_recipes = num_recipes,
+        page = page,
+        total_pages = total_pages,
+        endpoint = "recipe_bp.browse_recipes",
+        search_query = search_query,
+        search_type = search_type,
     )
 
 @browse_blueprint.route("/recipe/<int:recipe_id>", methods=["GET"])

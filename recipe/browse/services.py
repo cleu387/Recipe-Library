@@ -5,14 +5,14 @@ from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.user import User
 from recipe.domainmodel.favourite import Favourite
 
-def get_number_of_recipes(repo: AbstractRepository):
-    return repo.get_number_of_recipes()
+def get_number_of_recipes(repo, search_query=None, search_type="name"):
+    return repo.get_recipe_count(search_query, search_type)
 
-def get_recipe(repo: AbstractRepository):
-    recipes = repo.get_recipe()
+def get_recipe(repo, search_query=None, search_type="name", page=1, per_page=20):
+    recipes = repo.get_recipes(search_query, search_type, page, per_page)
     recipe_dicts = []
     for recipe in recipes:
-        recipe_dict = {
+        recipe_dicts.append({
             "id": int(recipe.id),
             "name": recipe.name,
             "author": recipe.author.name,
@@ -21,8 +21,7 @@ def get_recipe(repo: AbstractRepository):
             "description": recipe.description,
             "rating": recipe.rating if recipe.rating is not None else None,
 
-        }
-        recipe_dicts.append(recipe_dict)
+        })
     return recipe_dicts
 
 def get_recipe_by_id(recipe_id: int, repo: AbstractRepository):
