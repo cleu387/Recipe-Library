@@ -70,7 +70,6 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
     def get_authors(self) -> List[Author]:
         pass
 
-
     def get_number_of_authors(self) -> int:
         pass
 
@@ -94,7 +93,6 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             with scm.session.no_autoflush:
                 scm.session.merge(category)
             scm.commit()
-
 
     def get_categories(self) -> List[Category]:
         pass
@@ -187,66 +185,15 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
     # endregion
 
 
-
-    def _populate_recipe_data(self, recipe: Recipe):
-        """
-        Populate a Recipe object with related data (images, ingredients, instructions)
-        to maintain consistent domain model interface between memory and database repositories.
-        """
-        if recipe is None:
-            return
-
-        # Use the same session context
-        with self._session_cm as scm:
-            self._populate_recipe_data_in_session(recipe, scm.session)
-
-    def _populate_recipe_data_in_session(self, recipe: Recipe, session):
-        """
-        Populate a Recipe object with related data using the provided session.
-        """
-        if recipe is None:
-            return
-
-        # Load and populate images
-        recipe_images = session.query(RecipeImage).filter(
-            RecipeImage._RecipeImage__recipe_id == recipe.id
-        ).order_by(RecipeImage._RecipeImage__position).all()
-
-        if recipe_images:
-            image_urls = [img.url for img in recipe_images]
-            recipe._Recipe__images = image_urls
-        else:
-            print(f"DEBUG: No images found for recipe {recipe.id}")
-
-        # TODO: Load and populate ingredients
-        recipe_images = session.query(RecipeImage).filter(
-            RecipeImage._RecipeImage__recipe_id == recipe.id
-        ).order_by(RecipeImage._RecipeImage__position).all()
-
-        if recipe_images:
-            image_urls = [img.url for img in recipe_images]
-            recipe._Recipe__images = image_urls
-        else:
-            print(f"DEBUG: No images found for recipe {recipe.id}")
-
-        # TODO: Load and populate instructions
-        recipe_images = session.query(RecipeImage).filter(
-            RecipeImage._RecipeImage__recipe_id == recipe.id
-        ).order_by(RecipeImage._RecipeImage__position).all()
-
-        if recipe_images:
-            image_urls = [img.url for img in recipe_images]
-            recipe._Recipe__images = image_urls
-        else:
-            print(f"DEBUG: No images found for recipe {recipe.id}")
-
-
     # region RecipeImage Methods
     def add_recipe_image(self, recipe_image: RecipeImage):
         pass
 
     def add_multiple_recipe_images(self, recipe_images: List[RecipeImage]):
-        pass
+        with self._session_cm as scm:
+            for recipe_image in recipe_images:
+                scm.session.add(recipe_image)
+            scm.commit()
 
     def get_recipe_images(self, recipe_id: int) -> List[RecipeImage]:
         pass
@@ -258,7 +205,10 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         pass
 
     def add_multiple_recipe_ingredients(self, recipe_ingredients: List[RecipeIngredient]):
-        pass
+        with self._session_cm as scm:
+            for recipe_ingredient in recipe_ingredients:
+                scm.session.add(recipe_ingredient)
+            scm.commit()
 
     def get_recipe_ingredients(self, recipe_id: int) -> List[RecipeIngredient]:
         pass
