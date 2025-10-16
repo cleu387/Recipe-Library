@@ -16,7 +16,7 @@ class Config:
 
     SECRET_KEY = environ.get('SECRET_KEY')
 
-    TESTING = environ.get('TESTING')
+    TESTING = environ.get('TESTING', 'false').lower() == 'true'
 
     REPOSITORY = environ.get('REPOSITORY')
 

@@ -37,7 +37,7 @@ def create_app():
         repo.repo_instance = SqlAlchemyRepository(session_factory)
 
 
-        if app.config['TESTING'] or len(inspect(database_engine).get_table_names()) == 0:
+        if app.config['TESTING'] == True or len(inspect(database_engine).get_table_names()) == 0:
             print("REPOPULATING DATABASE...")
             clear_mappers()
             mapper_registry.metadata.drop_all(database_engine)

@@ -34,6 +34,7 @@ recipes_table = Table(
     Column('nutrition_id', Integer, ForeignKey('nutrition.id'), unique=True),
     Column("author_id", ForeignKey("author.id")),
     Column("category_id", ForeignKey("categories.id")),
+    Column('rating', Float),
 )
 
 # Category table
@@ -135,6 +136,7 @@ def map_model_to_tables():
         '_Recipe__category': relationship(Category, back_populates='_Category__recipes', foreign_keys=[recipes_table.c.category_id]),
         '_Recipe__favourites': relationship(Favourite, back_populates='_Favourite__recipe'),
         '_Recipe__reviews': relationship(Review, back_populates='_Review__recipe'),
+        '_Recipe__rating': recipes_table.c.rating,
     })
 
     # Category mapping

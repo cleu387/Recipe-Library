@@ -174,7 +174,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         reviews = []
         try:
             reviews = self._session_cm.session.query(Review).filter(
-                Review.recipe_id == recipe_id).all
+                Review.recipe_id == recipe_id).all()
 
         except NoResultFound:
             print(f'Recipe {recipe_id} was not found')
@@ -203,7 +203,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             # Populate the recipe with related data for consistent domain model interface
 
         except NoResultFound:
-            print(f'User {username} was not found')
+            pass
 
         return user
 
@@ -236,7 +236,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
     def get_favourites(self, user: User) -> List[Favourite]:
         with self._session_cm as scm:
-            return scm.session.query(Favourite).filter_by(_Favourite__user_id=user.id).all()
+            return scm.session.query(Favourite).filter(Favourite.user == user).all()
 
 
     # endregion
@@ -291,6 +291,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             recipe._Recipe__instructions = instructions
         else:
             print(f"DEBUG: No instruction found for recipe {recipe.id}")
+
 
     # region RecipeImage Methods
     def add_recipe_image(self, recipe_image: RecipeImage):
