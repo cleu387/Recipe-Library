@@ -267,18 +267,17 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
         if recipe_images:
             image_urls = [img.url for img in recipe_images]
-            recipe.images = image_urls
+            recipe._Recipe__images = image_urls
         else:
             recipe.images = []
 
         # Load and populate ingredients
         recipe_ingredients = session.query(RecipeIngredient).filter(
             RecipeIngredient._RecipeIngredient__recipe_id == recipe.id
-        ).order_by(RecipeIngredient._RecipeIngredient__position).all()
+        ).all()
 
         if recipe_ingredients:
-            recipe._Recipe_ingredients = [ingredients for ingredients in recipe_ingredients]
-            recipe._Recipe_ingredients_quantities = [ingredients.quantity for ingredients in recipe_ingredients]
+            recipe._Recipe__ingredients = [f"{recipe_ingredient.quantity} {recipe_ingredient.ingredient}" for recipe_ingredient in recipe_ingredients]
         else:
             recipe._Recipe_ingredients = []
             recipe._Recipe_ingredients_quantities = []
@@ -286,17 +285,23 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         # Load and populate instructions
         recipe_instructions= session.query(RecipeInstruction).filter(
             RecipeInstruction._RecipeInstruction__recipe_id == recipe.id
-        ).order_by(RecipeInstruction._RecipeInstruction__position).all()
+        )
 
         if recipe_instructions:
             instructions = [instruction.step for instruction in recipe_instructions]
-            recipe.instructions = instructions
+            recipe._Recipe__instructions = instructions
         else:
             recipe.instructions = []
-        if recipe.nutrition is None:
-            nutrition_obj = session.query(Nutrition).filter(Nutrition._Nutrition__id == recipe.nutrition.id).first()
-            if nutrition_obj:
-                recipe.nutrition = nutrition_obj
+
+        # Load and populate reviews
+        reviews = session.query(Review).filter(
+            Review._Review__recipe == recipe
+        ).all()
+
+        if reviews:
+            recipe._Recipe__reviews = reviews
+        else:
+            recipe._Review__recipe = []
 
     # region RecipeImage Methods
     def add_recipe_image(self, recipe_image: RecipeImage):

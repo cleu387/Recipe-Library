@@ -1,6 +1,6 @@
 """Initialize Flask app."""
 from datetime import datetime
-from flask import Flask, render_template
+from flask import Flask
 import recipe.adapters.Repository as repo
 from recipe.adapters.MemoryRepository import MemoryRepository
 from recipe.adapters.DatabaseRepository import SqlAlchemyRepository

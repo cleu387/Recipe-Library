@@ -217,9 +217,3 @@ class Recipe:
                 self.__rating = None
         else:
             self.__rating = None
-    @reconstructor
-    def init_on_load(self):
-        if not hasattr(self, "_Recipe__images"):
-            self._Recipe__images = []
-        if not hasattr(self, "_Recipe__reviews"):
-            self._Recipe__reviews = []

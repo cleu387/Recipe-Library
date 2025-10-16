@@ -35,6 +35,8 @@ recipes_table = Table(
     Column("author_id", ForeignKey("author.id")),
     Column("category_id", ForeignKey("categories.id")),
     Column('rating', Float),
+    Column('cook_time', Integer, nullable=False),
+    Column('preparation_time', Integer, nullable=False),
 )
 
 # Category table
@@ -92,7 +94,7 @@ review_table = Table(
     'review', mapper_registry.metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('rating', Float, nullable=False),
-    Column('text', Text),
+    Column('review_text', Text),
     Column('date', DateTime, nullable=False),
     Column('user_id', Integer, ForeignKey('user.id')),
     Column('recipe_id', Integer, ForeignKey('recipes.id')),
@@ -137,6 +139,8 @@ def map_model_to_tables():
         '_Recipe__favourites': relationship(Favourite, back_populates='_Favourite__recipe'),
         '_Recipe__reviews': relationship(Review, back_populates='_Review__recipe'),
         '_Recipe__rating': recipes_table.c.rating,
+        '_Recipe__cook_time': recipes_table.c.cook_time,
+        '_Recipe__preparation_time': recipes_table.c.preparation_time,
     })
 
     # Category mapping
@@ -190,7 +194,7 @@ def map_model_to_tables():
     mapper_registry.map_imperatively(Review, review_table, properties={
         '_Review__id': review_table.c.id,
         '_Review__rating': review_table.c.rating,
-        '_Review__text': review_table.c.text,
+        '_Review__review_text': review_table.c.review_text,
         '_Review__date': review_table.c.date,
         '_Review__user': relationship(User, back_populates='_User__reviews'),
         '_Review__recipe': relationship(Recipe, back_populates='_Recipe__reviews')
