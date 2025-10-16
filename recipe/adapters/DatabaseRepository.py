@@ -269,7 +269,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             image_urls = [img.url for img in recipe_images]
             recipe._Recipe__images = image_urls
         else:
-            recipe.images = []
+            recipe._Recipe__images = []
 
         # Load and populate ingredients
         recipe_ingredients = session.query(RecipeIngredient).filter(
@@ -277,10 +277,11 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         ).all()
 
         if recipe_ingredients:
-            recipe._Recipe__ingredients = [f"{recipe_ingredient.quantity} {recipe_ingredient.ingredient}" for recipe_ingredient in recipe_ingredients]
+            recipe._Recipe__ingredient_quantities = [recipe_ingredient.quantity for recipe_ingredient in recipe_ingredients]
+            recipe._Recipe__ingredients = [recipe_ingredient.ingredient  for recipe_ingredient in recipe_ingredients]
         else:
-            recipe._Recipe_ingredients = []
-            recipe._Recipe_ingredients_quantities = []
+            recipe._Recipe__ingredient_quantities = []
+            recipe._Recipe__ingredients = []
 
         # Load and populate instructions
         recipe_instructions= session.query(RecipeInstruction).filter(

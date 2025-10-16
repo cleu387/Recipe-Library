@@ -68,8 +68,8 @@
 
     <h3>Ingredients</h3>
     <ul>
-        {% for ingredients in recipe.ingredients %}
-            <li>{{ ingredients }}</li>
+        {% for i in range(recipe.ingredients | length) %}
+            <li>{{ recipe.ingredient_quantities[i] }} {{ recipe.ingredients[i] }}</li>
         {% endfor %}
     </ul>
 
