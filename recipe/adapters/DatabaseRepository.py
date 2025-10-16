@@ -159,11 +159,27 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
     # region Review_data
     def add_review(self, review: Review):
-        pass
+        with self._session_cm as scm:
+            with scm.session.no_autoflush:
+                user = review.user
+
+                if_exist = scm.session.query(Review).filter_by(user_id=review.user.id, recipe_id=review.recipe.id).first()
+                if if_exist:
+                    raise ValueError(f"User '{user.username}' has already reviewed this recipe!")
+
+                scm.session.add(review)
+            scm.commit()
 
     def get_recipe_reviews(self, recipe_id: int):
-        pass
+        reviews = []
+        try:
+            reviews = self._session_cm.session.query(Review).filter(
+                Review.recipe_id == recipe_id).all
 
+        except NoResultFound:
+            print(f'Recipe {recipe_id} was not found')
+
+        return reviews
 
     # endregion
 
@@ -275,7 +291,6 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             recipe._Recipe__instructions = instructions
         else:
             print(f"DEBUG: No instruction found for recipe {recipe.id}")
-
 
     # region RecipeImage Methods
     def add_recipe_image(self, recipe_image: RecipeImage):

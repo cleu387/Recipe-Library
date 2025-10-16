@@ -134,7 +134,7 @@ def map_model_to_tables():
         '_Recipe__author': relationship(Author, back_populates='_Author__recipes'),
         '_Recipe__category': relationship(Category, back_populates='_Category__recipes', foreign_keys=[recipes_table.c.category_id]),
         '_Recipe__favourites': relationship(Favourite, back_populates='_Favourite__recipe'),
-        '_Recipe__reviews': relationship(Review, back_populates='_Review__recipe')
+        '_Recipe__reviews': relationship(Review, back_populates='_Review__recipe'),
     })
 
     # Category mapping
