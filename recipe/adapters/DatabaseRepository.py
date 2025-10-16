@@ -125,20 +125,29 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
                     scm.session.add(recipe)
             scm.commit()
 
-    def get_recipe(self) -> List[Recipe]:
-        return self._session_cm.session.query(Recipe).all()
+    def get_recipe(self) -> list[Recipe]:
+        with self._session_cm as scm:
+            return scm.session.query(Recipe).all()
+
 
     def get_all_recipe_id(self) -> list[int]:
-        result = self._session_cm.session.query(Recipe.id).all()
-        return [row[0] for row in result]
+        with self._session_cm as scm:
+            return [recipe.id for recipe in scm.session.query(Recipe).all()]
 
     def get_number_of_recipes(self) -> int:
         return self._session_cm.session.query(Recipe).count()
 
     def get_recipe_by_id(self, recipe_id: int) -> Recipe:
-        recipe = self._session_cm.session.query(Recipe).get(recipe_id)
-        if recipe is None:
-            raise ValueError(f"Recipe with id {recipe_id} not found")
+        recipe = None
+        try:
+            query = self._session_cm.session.query(Recipe).filter(
+                Recipe._Recipe__id == recipe_id)
+            recipe = query.one()
+            # Populate the recipe with related data for consistent domain model interface
+            self._populate_recipe_data(recipe)
+        except NoResultFound:
+            print(f'Recipe {recipe_id} was not found')
+
         return recipe
 
     # endregion
@@ -184,6 +193,46 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
     # endregion
 
+    def _populate_recipe_data(self, recipe: Recipe):
+        """
+        Populate a Recipe object with related data (images, ingredients, instructions)
+        to maintain consistent domain model interface between memory and database repositories.
+        """
+        if recipe is None:
+            return
+
+        # Use the same session context
+        with self._session_cm as scm:
+            self._populate_recipe_data_in_session(recipe, scm.session)
+
+    def _populate_recipe_data_in_session(self, recipe: Recipe, session):
+        """
+        Populate a Recipe object with related data using the provided session.
+        """
+        if recipe is None:
+            return
+
+        # Load and populate images
+        recipe_images = session.query(RecipeImage).filter(
+            RecipeImage._RecipeImage__recipe_id == recipe.id
+        ).order_by(RecipeImage._RecipeImage__position).all()
+
+        if recipe_images:
+            image_urls = [img.url for img in recipe_images]
+            recipe._Recipe__images = image_urls
+        else:
+            print(f"DEBUG: No images found for recipe {recipe.id}")
+
+        # Load and populate ingredients
+        recipe_ingredients = session.query(RecipeIngredient).filter(
+            RecipeIngredient._RecipeIngredient__recipe_id == recipe.id
+        )
+
+        if recipe_ingredients:
+            recipe._Recipe__ingredients = recipe_ingredients.all()
+
+        # TODO: Load and populate instructions
+
 
     # region RecipeImage Methods
     def add_recipe_image(self, recipe_image: RecipeImage):
@@ -196,7 +245,10 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             scm.commit()
 
     def get_recipe_images(self, recipe_id: int) -> List[RecipeImage]:
-        pass
+        recipe_image = self._session_cm.session.query(RecipeImage).get(recipe_id)
+        if recipe_image is None:
+            raise ValueError(f"RecipeImage with id {recipe_id} not found")
+        return recipe_image
 
     # endregion
 

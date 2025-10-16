@@ -24,13 +24,6 @@ author_table = Table(
     Column("name", String(255), nullable=False),
 )
 
-# Category Table
-category_table = Table(
-    "category", mapper_registry.metadata,
-    Column("id", Integer, primary_key=True),
-    Column("name", String(255), nullable=False),
-)
-
 # Recipes table
 recipes_table = Table(
     'recipes', mapper_registry.metadata,
@@ -39,7 +32,7 @@ recipes_table = Table(
     Column('description', Text, nullable=False),
     Column('nutrition_id', Integer, ForeignKey('nutrition.id'), unique=True),
     Column("author_id", ForeignKey("author.id")),
-    Column("category_id", ForeignKey("categories.id"))
+    Column("category_id", ForeignKey("categories.id")),
 )
 
 # Category table
@@ -62,17 +55,6 @@ nutrition_table = Table(
     Column('fiber', Float, nullable=False),
     Column('sugar', Float, nullable=False),
     Column('protein', Float, nullable=False)
-)
-
-# Recipes table
-recipes_table = Table(
-    'recipes', mapper_registry.metadata,
-    Column('id', Integer, primary_key=True),
-    Column('name', String(255), nullable=False),
-    Column('description', Text, nullable=False),
-    Column('nutrition_id', Integer, ForeignKey('nutrition.id'), unique=True),
-    Column("author_id", Integer, ForeignKey("author.id")),
-    Column("category_id", Integer, ForeignKey("category.id")),
 )
 
 # Recipe images table
@@ -116,6 +98,9 @@ favourite_table = Table(
     Column('user_id', Integer, ForeignKey('user.id'), primary_key=True),
     Column('recipe_id', Integer, ForeignKey('recipes.id'), primary_key=True),
 )
+
+
+
 # ORM Mappings
 def map_model_to_tables():
 
@@ -131,9 +116,10 @@ def map_model_to_tables():
         '_Recipe__id': recipes_table.c.id,
         '_Recipe__name': recipes_table.c.name,
         '_Recipe__description': recipes_table.c.description,
-        '_Recipe__author': relationship(Author, back_populates='_Author__recipes'),
         '_Recipe__nutrition': relationship(Nutrition, back_populates='_Nutrition__recipe'),
-        '_Recipe__category': relationship(Category, back_populates='_Category__recipes')
+        '_Recipe__author': relationship(Author, back_populates='_Author__recipes'),
+        '_Recipe__category': relationship(Category, back_populates='_Category__recipes', foreign_keys=[recipes_table.c.category_id]),
+        '_Recipe__favourites': relationship(User, secondary=favourite_table, back_populates='_User__favourites'),
     })
 
     # Category mapping
@@ -158,24 +144,12 @@ def map_model_to_tables():
         '_Nutrition__recipe': relationship(Recipe, back_populates='_Recipe__nutrition', uselist=False)
     })
 
-    # Recipe mapping
-    mapper_registry.map_imperatively(Recipe, recipes_table, properties={
-        '_Recipe__id': recipes_table.c.id,
-        '_Recipe__name': recipes_table.c.name,
-        '_Recipe__description': recipes_table.c.description,
-        '_Recipe__nutrition': relationship(Nutrition, back_populates='_Nutrition__recipe'),
-        '_Recipe__author': relationship(Author, back_populates='_Author__recipes'),
-        '_Recipe__category': relationship(Category, back_populates='_Category__recipes', foreign_keys=[recipes_table.c.category_id]),
-        '_Recipe__favourites': relationship(User, secondary=favourite_table, back_populates='_User__favourites')
-    })
-
-
     # RecipeImage mapping
     mapper_registry.map_imperatively(RecipeImage, recipe_images_table, properties={
         '_RecipeImage__id': recipe_images_table.c.id,
         '_RecipeImage__recipe_id': recipe_images_table.c.recipe_id,
         '_RecipeImage__url': recipe_images_table.c.url,
-        '_RecipeImage__position': recipe_images_table.c.position
+        '_RecipeImage__position': recipe_images_table.c.position,
     })
 
     # RecipeIngredient mapping
@@ -187,12 +161,6 @@ def map_model_to_tables():
         '_RecipeIngredient__position': recipe_ingredients_table.c.position
     })
 
-    # Category mapping
-    mapper_registry.map_imperatively(Category, category_table, properties={
-        '_Category__id': category_table.c.id,
-        '_Category__name': category_table.c.name,
-        '_Category__recipes': relationship(Recipe, back_populates="_Recipe__category")
-    })
     # Review Mapping
     mapper_registry.map_imperatively(Review, review_table, properties={
         '_Review__id': review_table.c.id,
@@ -201,6 +169,7 @@ def map_model_to_tables():
         '_Review__date': review_table.c.date,
         '_Review__user': relationship(User, back_populates='_User__reviews')
     })
+
     # User Mapping
     mapper_registry.map_imperatively(User, user_table, properties={
         '_User__id': user_table.c.id,
