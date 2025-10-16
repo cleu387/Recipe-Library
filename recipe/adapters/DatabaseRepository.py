@@ -392,7 +392,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
     def get_recipe_count(self, search_query=None, search_type="name"):
         session = self._session_cm.session
-        query = session.query(func.count(recipes_table.c.id))
+        query = session.query(Recipe)
         if search_query:
             search_query_lower = f"%{search_query.lower()}%"
             if search_type == "name":

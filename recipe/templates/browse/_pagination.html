@@ -10,7 +10,7 @@
         {% endif %}
     {% endif %}
 
-    {% set start = page - 5 if page - 5 > 0 else 1  %}
+    {% set start = page - 5 if page - 5 > 1 else 1  %}
     {% set end = page + 5 if page + 5 <= total_pages else total_pages %}
 
     {% for p in range(start, end + 1) %}
