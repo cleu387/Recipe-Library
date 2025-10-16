@@ -62,7 +62,10 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
     # region Author_data
     def add_author(self, author: Author):
-        pass
+        with self._session_cm as scm:
+            with scm.session.no_autoflush:
+                scm.session.merge(author)
+            scm.session.commit()
 
     def get_authors(self) -> List[Author]:
         pass
@@ -77,7 +80,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             with scm.session.no_autoflush:
                 for author in authors:
                     if author.id not in seen_ids:
-                        scm.session.merge(author)
+                        scm.session.add(author)
                         seen_ids.add(author.id)
             scm.commit()
 
@@ -87,7 +90,10 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
     # region Category_data
 
     def add_category(self, category: Category):
-        pass
+        with self._session_cm as scm:
+            with scm.session.no_autoflush:
+                scm.session.merge(category)
+            scm.commit()
 
 
     def get_categories(self) -> List[Category]:
@@ -97,7 +103,11 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         pass
 
     def add_multiple_categories(self, categories: List[Category]):
-        pass
+        with self._session_cm as scm:
+            with scm.session.no_autoflush:
+                for category in categories:
+                    scm.session.add(category)
+            scm.commit()
 
     # endregion
 
@@ -105,7 +115,10 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
     # region Recipe_data
 
     def add_recipe(self, recipe: Recipe):
-        pass
+        with self._session_cm as scm:
+            with scm.session.no_autoflush:
+                scm.session.merge(recipe)
+            scm.commit()
 
     def add_multiple_recipes(self, recipes: List[Recipe]):
         with self._session_cm as scm:
@@ -135,7 +148,10 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
     # region Review_data
     def add_review(self, review: Review):
-        pass
+        with self._session_cm as scm:
+            with scm.session.no_autoflush:
+                scm.session.merge(review)
+            scm.commit()
 
     def get_recipe_reviews(self, recipe_id: int):
         pass
@@ -146,7 +162,10 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
     # region User_data
     def add_user(self, user: User):
-        pass
+        with self._session_cm as scm:
+            with scm.session.no_autoflush:
+                scm.session.merge(user)
+            scm.commit()
 
     def get_user(self, username: str) -> User:
         pass

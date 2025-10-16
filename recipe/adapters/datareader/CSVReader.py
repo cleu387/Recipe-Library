@@ -1,4 +1,3 @@
-# csvdatareader_recipes.py
 import os
 import csv
 import ast

@@ -54,7 +54,7 @@ def create_app():
         if app.config['TESTING'] or len(inspect(database_engine).get_table_names()) == 0:
             print("REPOPULATING DATABASE...")
             clear_mappers()
-
+            mapper_registry.metadata.drop_all(database_engine)
             mapper_registry.metadata.create_all(database_engine)
 
             for table in reversed(mapper_registry.metadata.sorted_tables):

@@ -2,11 +2,16 @@ from sqlalchemy import (
     Table, Column, Integer, Float, String, DateTime, ForeignKey, Text, UniqueConstraint
 )
 from sqlalchemy.orm import registry, relationship
+
+from recipe.domainmodel.category import Category
+from recipe.domainmodel.favourite import Favourite
 from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.nutrition import Nutrition
 
 from recipe.domainmodel.recipe_image import RecipeImage
 from recipe.domainmodel.author import Author
+from recipe.domainmodel.review import Review
+from recipe.domainmodel.user import User
 
 # Global variable giving access to the MetaData (schema) information of the database
 mapper_registry = registry()
@@ -14,6 +19,13 @@ mapper_registry = registry()
 # Author table
 author_table = Table(
     "author", mapper_registry.metadata,
+    Column("id", Integer, primary_key=True),
+    Column("name", String(255), nullable=False),
+)
+
+# Category Table
+category_table = Table(
+    "category", mapper_registry.metadata,
     Column("id", Integer, primary_key=True),
     Column("name", String(255), nullable=False),
 )
@@ -40,7 +52,8 @@ recipes_table = Table(
     Column('name', String(255), nullable=False),
     Column('description', Text, nullable=False),
     Column('nutrition_id', Integer, ForeignKey('nutrition.id'), unique=True),
-    Column("author_id", ForeignKey("author.id"))
+    Column("author_id", Integer, ForeignKey("author.id")),
+    Column("category_id", Integer, ForeignKey("category.id")),
 )
 
 # Recipe images table
@@ -52,7 +65,28 @@ recipe_images_table = Table(
     Column('position', Integer, nullable=False)
 )
 
+review_table = Table(
+    'review', mapper_registry.metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('rating', Float, nullable=False),
+    Column('text', Text),
+    Column('date', DateTime, nullable=False),
+    Column('user_id', Integer, ForeignKey('user.id')),
+    Column('recipe_id', Integer, ForeignKey('recipes.id')),
+)
 
+user_table = Table(
+    'user', mapper_registry.metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('username', String(255), nullable=False),
+    Column('password', String(255), nullable=False),
+)
+
+favourite_table = Table(
+    'favourite', mapper_registry.metadata,
+    Column('user_id', Integer, ForeignKey('user.id'), primary_key=True),
+    Column('recipe_id', Integer, ForeignKey('recipes.id'), primary_key=True),
+)
 # ORM Mappings
 def map_model_to_tables():
     # Nutrition mapping
@@ -76,7 +110,9 @@ def map_model_to_tables():
         '_Recipe__name': recipes_table.c.name,
         '_Recipe__description': recipes_table.c.description,
         '_Recipe__nutrition': relationship(Nutrition, back_populates='_Nutrition__recipe'),
-        '_Recipe__author': relationship(Author, back_populates='_Author__recipes')
+        '_Recipe__author': relationship(Author, back_populates='_Author__recipes'),
+        '_Recipe__category': relationship(Category, back_populates='_Category__recipes', foreign_keys=[recipes_table.c.category_id]),
+        '_Recipe__favourites': relationship(User, secondary=favourite_table, back_populates='_User__favourites')
     })
 
 
@@ -95,3 +131,27 @@ def map_model_to_tables():
         '_Author__name': author_table.c.name,
         '_Author__recipes': relationship(Recipe, back_populates="_Recipe__author")
     })
+
+    # Category mapping
+    mapper_registry.map_imperatively(Category, category_table, properties={
+        '_Category__id': category_table.c.id,
+        '_Category__name': category_table.c.name,
+        '_Category__recipes': relationship(Recipe, back_populates="_Recipe__category")
+    })
+    # Review Mapping
+    mapper_registry.map_imperatively(Review, review_table, properties={
+        '_Review__id': review_table.c.id,
+        '_Review__rating': review_table.c.rating,
+        '_Review__text': review_table.c.text,
+        '_Review__date': review_table.c.date,
+        '_Review__user': relationship(User, back_populates='_User__reviews')
+    })
+    # User Mapping
+    mapper_registry.map_imperatively(User, user_table, properties={
+        '_User__id': user_table.c.id,
+        '_User__username': user_table.c.username,
+        '_User__password': user_table.c.password,
+        '_User__reviews': relationship(Review, back_populates='_Review__user'),
+        '_User__favourites': relationship(Recipe, secondary=favourite_table, back_populates='_Recipe__favourites')
+    })
+
