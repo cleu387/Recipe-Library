@@ -165,6 +165,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
                     raise ValueError(f"User '{user.username}' has already reviewed this recipe!")
 
                 scm.session.add(review)
+                review.recipe.add_review(review)
             scm.commit()
 
     def get_recipe_reviews(self, recipe_id: int):
