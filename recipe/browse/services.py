@@ -65,8 +65,8 @@ def calculate_health_rating(nutrition):
     sodium_per_meal = 800
     carbohydrates_per_meal = range(60,101)
     sugar_per_meal = 15
-    fiber_per_meal = range(8,13)
-    protein_per_meal = range(20,31)
+    fiber_per_meal = 8
+    protein_per_meal = 20
 
 
 
@@ -85,9 +85,9 @@ def calculate_health_rating(nutrition):
     if nutrition.sugar > sugar_per_meal:
         score -= 0.5
 
-    if nutrition.fiber in fiber_per_meal:
+    if nutrition.fiber > fiber_per_meal:
         score += 1
-    if nutrition.protein in protein_per_meal:
+    if nutrition.protein > protein_per_meal:
         score += 1
 
     score = max(1, min(score, 5))
