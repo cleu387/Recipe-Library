@@ -54,9 +54,9 @@ The *project directory/.env* file contains variable settings. They are set with 
 * `WTF_CSRF_SECRET_KEY`: Secret key used by the WTForm library.
  
 ## Health Star Calculation
-Health stars are calculated by setting a default score of 5/5. each nutritional value is checked and if they are greater than a certain limit, one point is removed from the overall score these values include:
-calories > 500, fat > 20, saturated fat > 5, cholesterol > 100, sodium > 600, carbohydrates > 60 and sugar > 25.
-points are added to the total score if fibre >= 5 and or protein >= 10
+Health stars are calculated by setting a default score of 5/5. each nutritional value is checked and if they are greater than a certain limit one point is removed from the score. These values were taken from the US guideline for adult health. One point is removed from the overall score if the recipe is:
+not between 600-700 calories, not between 15-25 grams of fat, not between 5-8 grams of saturated fat, if cholesterol is greater than 100mg , sodium is greater than 800mg, carbohydrates not between 60-100 grams and sugar is greater than 15 grams.
+one point added to the total score if fibre is greater than 8 grams and or protein greater than 20 grams. (thus two bonus points can be awarded to a recipe while also having its score clamped between 0-5.
 
 
 ## Data sources

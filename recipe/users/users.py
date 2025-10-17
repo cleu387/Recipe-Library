@@ -12,10 +12,9 @@ users_blueprint = Blueprint("users_bp", __name__)
 def profile():
     username = session.get("username")
     favourites_list = services.get_favourites(username, repo.repo_instance)
-    favourites = [favourite.recipe for favourite in favourites_list]
     return render_template(
         "users/profile.html",
-        recipes=favourites
+        recipes=favourites_list
         )
 
 @users_blueprint.route("/profile/remove/<int:recipe_id>", methods=["POST"])

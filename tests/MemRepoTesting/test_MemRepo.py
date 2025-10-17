@@ -1,7 +1,7 @@
 import pytest
 import os
-from recipe.adapters.Repository import AbstractRepository
-from recipe.adapters.MemoryRepository import MemoryRepository, populate
+from recipe.adapters.MemoryRepository import MemoryRepository
+from recipe.adapters.populate import populate
 from recipe.domainmodel.favourite import Favourite
 from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.author import Author
@@ -12,7 +12,7 @@ from recipe.domainmodel.user import User
 @pytest.fixture
 def memory_repository():
     mem_repo = MemoryRepository()
-    populate(mem_repo)
+    populate(mem_repo, False)
     return mem_repo
 
 def test_get_recipe(memory_repository):
@@ -39,7 +39,7 @@ def test_add_recipe(memory_repository):
     assert isinstance(test_data, list)
     assert isinstance(test_data[0], Recipe)
     assert len(test_data) == length + 1
-    assert test_data[0] == temp_recipe
+    assert test_data[-1] == temp_recipe
 
 def test_get_number_of_recipes(memory_repository):
     # Tests the get_number_of_recipes function to confirm it returns the correct number of recipes
@@ -88,8 +88,9 @@ def test_add_favourite(memory_repository):
     data = memory_repository.get_recipe()
     recipe = data[0]
     temp_user = User('Bob', 'Password1234')
+    favourite = Favourite(temp_user, recipe)
 
-    memory_repository.add_favourite(temp_user, recipe)
+    memory_repository.add_favourite(favourite)
     favourites = memory_repository.get_favourites(temp_user)
 
     assert len(favourites) == 1
@@ -103,8 +104,9 @@ def test_remove_favourite(memory_repository):
     data = memory_repository.get_recipe()
     recipe = data[0]
     temp_user = User('Bob', 'Password1234')
+    favourite = Favourite(temp_user, recipe)
 
-    memory_repository.add_favourite(temp_user, recipe)
+    memory_repository.add_favourite(favourite)
     memory_repository.remove_favourite(temp_user, recipe)
     favourites = memory_repository.get_favourites(temp_user)
 
@@ -116,9 +118,11 @@ def test_get_favourites(memory_repository):
     recipe1 = data[0]
     recipe2 = data[1]
     temp_user = User('Bob', 'Password1234')
+    favourite1 = Favourite(temp_user, recipe1)
+    favourite2 = Favourite(temp_user, recipe2)
 
-    memory_repository.add_favourite(temp_user, recipe1)
-    memory_repository.add_favourite(temp_user, recipe2)
+    memory_repository.add_favourite(favourite1)
+    memory_repository.add_favourite(favourite2)
     favourites = memory_repository.get_favourites(temp_user)
 
     assert len(favourites) == 2

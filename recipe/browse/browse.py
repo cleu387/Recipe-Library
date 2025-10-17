@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 import recipe.adapters.Repository as repo
 import recipe.browse.services as services
 from recipe.browse import review_services as review_services
-from recipe.authentication.authentication import login_required
+from recipe.users import services as user_services
 from recipe.authentication.authentication import login_required
 from recipe.browse.services import calculate_health_rating, FavouriteAlreadyExists
 
@@ -15,39 +15,19 @@ def browse_recipes():
     search_query = request.args.get("search", "").strip().lower()
     search_type = request.args.get("search_type", "name")
 
-    num_recipes = services.get_number_of_recipes(repo.repo_instance)
-    all_recipes = services.get_recipe(repo.repo_instance)
-
-    if search_query:
-        if search_type == "name":
-            all_recipes = [r for r in all_recipes if search_query in r["name"].lower()]
-        elif search_type == "author":
-            all_recipes = [r for r in all_recipes if search_query in r["author"].lower()]
-        elif search_type == "category":
-            all_recipes = [r for r in all_recipes if search_query in (r.get("category") or "").lower()]
-        elif search_type == "id":
-            try:
-                search_id = int(search_query)
-                all_recipes = [r for r in all_recipes if r["id"] == search_id]
-            except ValueError:
-                all_recipes = []
-
-    num_recipes = len(all_recipes)
-
-    start = (page - 1) * per_page
-    end = start + per_page
-    recipes_on_page = all_recipes[start:end]
+    recipes_on_page = services.get_recipe(repo.repo_instance, search_query, search_type, page, per_page)
+    num_recipes = services.get_number_of_recipes(repo.repo_instance, search_query, search_type)
     total_pages = (num_recipes + per_page - 1) // per_page
 
     return render_template(
         "browse/browse.html",
-        recipes=recipes_on_page,
-        num_recipes=num_recipes,
-        page=page,
-        total_pages=total_pages,
-        endpoint="recipe_bp.browse_recipes",
-        search_query=search_query,
-        search_type=search_type,
+        recipes = recipes_on_page,
+        num_recipes = num_recipes,
+        page = page,
+        total_pages = total_pages,
+        endpoint = "recipe_bp.browse_recipes",
+        search_query = search_query,
+        search_type = search_type,
     )
 
 @browse_blueprint.route("/recipe/<int:recipe_id>", methods=["GET"])
@@ -57,13 +37,17 @@ def recipeDescription(recipe_id):
     username = session.get("username")
     user = review_services.get_user(repo.repo_instance, username)
     recipe.health_stars = calculate_health_rating(recipe.nutrition)
+    fav_exist = False
+    if user:
+        fav_exist = services.if_favourite_exists(recipe_id, user, repo.repo_instance)
 
     return render_template(
         "recipebrowse/recipeDescription.html",
         title=f"Recipe: {recipe.name}",
         recipe=recipe,
         reviews=reviews,
-        current_user = user
+        current_user = user,
+        favourite = fav_exist
     )
 
 @browse_blueprint.route("/recipe/<int:recipe_id>/favourites", methods=["POST"])
@@ -78,6 +62,13 @@ def add_favourites(recipe_id):
     return redirect(
         url_for('recipe_bp.recipeDescription', recipe_id=recipe_id)
     )
+
+@browse_blueprint.route("/recipe/<int:recipe_id>", methods=["POST"])
+@login_required
+def remove_favourite(recipe_id):
+    username = session.get("username")
+    user_services.remove_favourite_recipe(recipe_id, username, repo.repo_instance)
+    return redirect(url_for('recipe_bp.recipeDescription', recipe_id=recipe_id))
 
 @browse_blueprint.route("/recipe/<int:recipe_id>", methods=["POST"])
 @login_required

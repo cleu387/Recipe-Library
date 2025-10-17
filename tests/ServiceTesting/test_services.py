@@ -5,7 +5,8 @@ import recipe.browse.services as browse_services
 import recipe.home.services as home_services
 import recipe.users.services as users_services
 from recipe.authentication import services as auth_services
-from recipe.adapters.MemoryRepository import MemoryRepository, populate
+from recipe.adapters.MemoryRepository import MemoryRepository
+from recipe.adapters.populate import populate
 from recipe.authentication.services import InvalidException
 from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.author import Author
@@ -15,11 +16,12 @@ from recipe.domainmodel.recipe import Recipe
 @pytest.fixture
 def repository():
     repo.repo_instance = MemoryRepository()
-    populate(repo.repo_instance)
+    populate(repo.repo_instance, False)
     return repo.repo_instance
 
 def test_get_number_of_recipes(repository):
     length = repository.get_number_of_recipes()
+    assert browse_services.get_number_of_recipes(repository) == length
     # Tests that the service layer returns the same result as the abstract repository
     assert browse_services.get_number_of_recipes(repository) == length
 
@@ -36,11 +38,10 @@ def test_get_recipe(repository):
     assert isinstance(recipe["author"], str)
 #Test for an ID that does link to a recipe
 def test_get_recipe_by_id_found(repository):
-    test_id = repository.get_recipe()[0].id
-
+    test_id = 38
     recipe = browse_services.get_recipe_by_id(test_id, repository)
 
-    assert recipe.id == test_id
+    assert recipe.id == 38
 #Test for an ID that does not link to a recipe
 def test_get_recipe_by_id_not_found():
     recipe_id = 1
@@ -127,11 +128,10 @@ def test_get_favourites(repository):
     browse_services.add_favourite_recipe(test_recipe2.id, new_username, repository)
 
     favourite = users_services.get_favourites(new_username, repository)
-    favourite_recipes = [fav.recipe for fav in favourite]
-    assert test_recipe1 in favourite_recipes
-    assert test_recipe2 in favourite_recipes
+    assert test_recipe1 in favourite
+    assert test_recipe2 in favourite
     assert test_recipe1 != test_recipe2
-    assert isinstance(favourite_recipes, list)
+    assert isinstance(favourite, list)
 
 def test_remove_favourites(repository):
     new_username = 'Edwin'
@@ -146,7 +146,20 @@ def test_remove_favourites(repository):
 
     users_services.remove_favourite_recipe(test_recipe1.id, new_username, repository)
     favourite = users_services.get_favourites(new_username, repository)
-    favourite_recipes = [fav.recipe for fav in favourite]
-    assert test_recipe1 not in favourite_recipes
-    assert test_recipe2 in favourite_recipes
+    assert test_recipe1 not in favourite
+    assert test_recipe2 in favourite
     assert isinstance(favourite, list)
+
+def test_if_favourite_exists(repository):
+    new_username = 'Edwin'
+    new_password = 'EdwinNoLikeCooking101'
+
+    auth_services.add_user(new_username, new_password, repository)
+    user = repository.get_user(new_username)
+    test_recipe = repository.get_recipe()[0]
+
+    assert browse_services.if_favourite_exists(test_recipe.id, user, repository) == False
+
+    browse_services.add_favourite_recipe(test_recipe.id, new_username, repository)
+
+    assert browse_services.if_favourite_exists(test_recipe.id, user, repository) == True

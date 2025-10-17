@@ -6,8 +6,8 @@ if TYPE_CHECKING:
     from recipe.domainmodel.recipe import Recipe
 
 class Favourite:
-    def __init__(self, favourite_id: int, user: User, recipe: Recipe):
-        self.__id = favourite_id
+    def __init__(self, user: User, recipe: Recipe):
+        self.__id = None
         self.__user = user
         self.__recipe = recipe
 

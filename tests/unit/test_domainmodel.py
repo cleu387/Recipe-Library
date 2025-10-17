@@ -311,23 +311,22 @@ class MockRecipe:
 def test_favourite_initialization():
     user = MockUser("Eve")
     recipe = MockRecipe(1, "Recipe B")
-    fav = Favourite(favourite_id= 1, user=user, recipe=recipe)
+    fav = Favourite(user=user, recipe=recipe)
 
-    assert fav.id == 1
     assert fav.user == user
     assert fav.recipe == recipe
 #Test ability to add recipe to Favourite
 def test_add_recipe_favourite():
     user = User("Bob", "Password123")
     recipe = MockRecipe(2, "Pizza")
-    fav = Favourite(favourite_id= 1, user=user, recipe=recipe)
+    fav = Favourite(user=user, recipe=recipe)
     user.add_favourite_recipe(fav)
     assert fav in user.favourite_recipes
 #Test cannot add duplicate recipe to favourite
 def test_add_duplicate_recipe_favourite():
     user = User("Bob", "Password123")
     recipe = MockRecipe(101, "Pizza")
-    fav = Favourite(favourite_id= 2, user=user, recipe=recipe)
+    fav = Favourite(user=user, recipe=recipe)
     user.add_favourite_recipe(fav)
     assert user.favourite_recipes.count(fav) == 1
     with pytest.raises(ValueError):
@@ -338,8 +337,8 @@ def test_remove_recipe_favourite():
     user = User("Dave", "Password123")
     r1 = MockRecipe(101, "Chip")
     r2 = MockRecipe(102, "Mustard" )
-    fav1 = Favourite(favourite_id= 3, user=user, recipe=r1)
-    fav2 = Favourite(favourite_id= 4, user=user, recipe=r2)
+    fav1 = Favourite(user=user, recipe=r1)
+    fav2 = Favourite(user=user, recipe=r2)
     user.add_favourite_recipe(fav1)
     user.add_favourite_recipe(fav2)
     user.remove_favourite_recipe(fav1)
@@ -350,8 +349,8 @@ def test_remove_nonexistent_recipe_favourite():
     user = User("Bob2", "Password123")
     r1 = MockRecipe(301, "Brick")
     r2 = MockRecipe(302, "Brick2")
-    fav1 = Favourite(favourite_id= 3, user=user, recipe=r1)
-    fav2 = Favourite(favourite_id= 4, user=user, recipe=r2)
+    fav1 = Favourite(user=user, recipe=r1)
+    fav2 = Favourite(user=user, recipe=r2)
     user.add_favourite_recipe(fav1)
     with pytest.raises(ValueError):
         user.remove_favourite_recipe(fav2)
@@ -360,14 +359,14 @@ def test_remove_nonexistent_recipe_favourite():
 def test_repr_favourite():
     user = MockUser("BobAgain")
     recipe = MockRecipe(402, "Burger")
-    fav = Favourite(favourite_id= 5, user=user, recipe=recipe)
+    fav = Favourite(user=user, recipe=recipe)
     assert repr(fav) == f"{user}: {recipe}"
 #Test if two Favourite objects have the same ID then their hash values are the same
 def test_hash_favourite():
     user = MockUser("Bob")
     r1 = MockRecipe(301, "Brick")
-    fav1 = Favourite(favourite_id= 6, user=user, recipe=r1)
-    fav2 = Favourite(favourite_id= 6, user=user, recipe=r1)
+    fav1 = Favourite(user=user, recipe=r1)
+    fav2 = Favourite(user=user, recipe=r1)
     assert hash(fav1) == hash(fav2)
 
 #Initialise a test Review object
