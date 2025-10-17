@@ -157,9 +157,44 @@ class MemoryRepository(AbstractRepository):
 
     #region RecipeSearch
     def get_recipes(self, page: int, per_page: int, search_query: str, search_type: str = 'name') -> List[Recipe]:
-        pass
+        recipes = self.__recipes
+        if search_query:
+            search_query_lower = search_query.lower()
+            if search_type == "name":
+                recipes = [r for r in recipes if search_query_lower in r.name.lower()]
+            elif search_type == "author":
+                recipes = [r for r in recipes if r.author and hasattr(r.author, 'name') and search_query_lower in r.author.name.lower()]
+            elif search_type == "category":
+                recipes = [r for r in recipes if r.category and hasattr(r.category, 'name') and search_query_lower in r.category.name.lower()]
+            elif search_type == "id":
+                try:
+                    search_id = int(search_query)
+                    recipes = [r for r in recipes if r.id == search_id]
+                except ValueError:
+                    recipes = []
+
+        start = (page - 1) * per_page
+        end = start + per_page
+        pagination = recipes[start:end]
+        return pagination
 
     def get_recipe_count(self, search_query: str, search_type: str = "name") -> int:
-        pass
+        recipes = self.__recipes
+        if search_query:
+            search_query_lower = search_query.lower()
+            if search_type == "name":
+                recipes = [r for r in recipes if search_query_lower in r.name.lower()]
+            elif search_type == "author":
+                recipes = [r for r in recipes if r.author and hasattr(r.author, 'name') and search_query_lower in r.author.name.lower()]
+            elif search_type == "category":
+                recipes = [r for r in recipes if r.category and hasattr(r.category, 'name') and search_query_lower in r.category.name.lower()]
+            elif search_type == "id":
+                try:
+                    search_id = int(search_query)
+                    recipes = [r for r in recipes if r.id == search_id]
+                except ValueError:
+                    recipes = []
+
+        return len(recipes)
 
     #endregion
