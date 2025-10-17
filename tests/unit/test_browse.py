@@ -26,11 +26,15 @@ def test_browse_recipes_page2(client):
     # Tests that the 2nd page of the recipe browser exists and contains the right recipes
     response = client.get("/browse?page=2")
     assert response.status_code == 200
-    recipes = repo.repo_instance.get_recipe()
     data = response.data.decode("utf-8")
-    assert recipes[0].name not in data
-    assert recipes[20].name in data
-    assert recipes[50].name not in data
+    page1_recipes = repo.repo_instance.get_recipes(page=1, per_page=20, search_query="")
+    page2_recipes = repo.repo_instance.get_recipes(page=2, per_page=20, search_query="")
+
+    for r in page1_recipes:
+        assert r.name not in data
+    for r in page2_recipes:
+        assert r.name in data
+
 
 
 

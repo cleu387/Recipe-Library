@@ -169,22 +169,24 @@ class MemoryRepository(AbstractRepository):
         return pagination
 
     def get_recipe_count(self, search_query: str, search_type: str = "name") -> int:
-        recipes = self.__recipes
-        if search_query:
-            search_query_lower = search_query.lower()
-            if search_type == "name":
-                recipes = [r for r in recipes if search_query_lower in r.name.lower()]
-            elif search_type == "author":
-                recipes = [r for r in recipes if r.author and hasattr(r.author, 'name') and search_query_lower in r.author.name.lower()]
-            elif search_type == "category":
-                recipes = [r for r in recipes if r.category and hasattr(r.category, 'name') and search_query_lower in r.category.name.lower()]
-            elif search_type == "id":
-                try:
-                    search_id = int(search_query)
-                    recipes = [r for r in recipes if r.id == search_id]
-                except ValueError:
-                    recipes = []
 
-        return len(recipes)
+        if not search_query:
+            return len(self.__recipes)
+
+        query = search_type.lower()
+        if search_type == "name":
+            return sum(1 for r in self.__recipes if query in r.name.lower())
+        elif search_type == "author":
+            return sum(1 for r in self.__recipes if query in r.author.name.lower())
+        elif search_type == "category":
+            return sum(1 for r in self.__recipes if query in r.category.name.lower())
+        elif search_type == "id":
+            try:
+                search_id = int(search_query)
+                return sum(1 for r in self.__recipes if r.id == search_id)
+            except ValueError:
+                return 0
+
+        return len(self.__recipes)
 
     #endregion
