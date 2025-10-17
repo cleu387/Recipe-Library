@@ -47,7 +47,7 @@ class SessionContextManager:
             self.__session.close()
 
 
-class SqlAlchemyRepository(AbstractRepository, ABC):
+class SqlAlchemyRepository(AbstractRepository):
     def __init__(self, session_factory):
         self._session_cm = SessionContextManager(session_factory)
 
@@ -92,10 +92,19 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             scm.commit()
 
     def get_categories(self) -> List[Category]:
-        pass
+        with self._session_cm as scm:
+            with scm.session.no_autoflush:
+                categories = scm.session.query(Category).all()
+        print(categories)
+
+
+
 
     def get_number_of_categories(self) -> int:
-        pass
+        with self._session_cm as scm:
+            with scm.session.no_autoflush:
+                length = len(scm.session.query(Category).all())
+        return length
 
     def add_multiple_categories(self, categories: List[Category]):
         with self._session_cm as scm:
@@ -126,9 +135,6 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         query = self._session_cm.session.query(Recipe)
 
         recipes = query.all()
-        # Populate all recipes with related data
-        for recipe in recipes:
-            self._populate_recipe_data(recipe)
         return recipes
 
     def get_all_recipe_id(self) -> list[int]:
@@ -192,15 +198,12 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
                 scm.session.merge(user)
             scm.commit()
 
-    def get_user(self, username: str) -> User:
+    def get_user(self, user_name: str) -> User:
         user = None
         try:
-            query = self._session_cm.session.query(User).filter(
-                User._User__username == username)
-            user = query.one()
-            # Populate the recipe with related data for consistent domain model interface
-
+            user = self._session_cm.session.query(User).filter(User._User__user_name == user_name).one()
         except NoResultFound:
+            # Ignore any exception and return None.
             pass
 
         return user
