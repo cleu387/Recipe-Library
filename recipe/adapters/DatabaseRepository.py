@@ -172,9 +172,10 @@ class SqlAlchemyRepository(AbstractRepository):
 
                 if_exist = scm.session.query(Review).filter_by(user_id=review.user.id, recipe_id=review.recipe.id).first()
                 if if_exist:
-                    raise ValueError(f"User '{user.username}' has already reviewed this recipe!")
-
-                scm.session.add(review)
+                    pass
+                else:
+                    scm.session.add(review)
+                    review.recipe.add_review(review)
             scm.commit()
 
     def get_recipe_reviews(self, recipe_id: int):

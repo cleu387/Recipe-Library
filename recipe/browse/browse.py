@@ -63,7 +63,7 @@ def add_favourites(recipe_id):
         url_for('recipe_bp.recipeDescription', recipe_id=recipe_id)
     )
 
-@browse_blueprint.route("/recipe/<int:recipe_id>", methods=["POST"])
+@browse_blueprint.route("/recipe/<int:recipe_id>/remove_favourite", methods=["POST"])
 @login_required
 def remove_favourite(recipe_id):
     username = session.get("username")

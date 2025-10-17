@@ -100,6 +100,7 @@ class MemoryRepository(AbstractRepository):
             if temp.user.username == user.username:
                 raise ValueError(f"User '{user.username}' has already reviewed this recipe!")
         self.__reviews[recipe.id].append(review)
+        recipe.add_review(review)
         review.user.reviews.append(review)
         review.recipe.reviews.append(review)
 

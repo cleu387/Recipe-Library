@@ -8,8 +8,8 @@ if TYPE_CHECKING:
 from datetime import datetime
 
 class Review:
-    def __init__(self, review_id: int, user: User, recipe: Recipe, rating: int, review_text: str, created_date: datetime = None):
-        self.__id = review_id
+    def __init__(self, user: User, recipe: Recipe, rating: int, review_text: str, created_date: datetime = None):
+        self.__id = None
         self.__user = user
         self.__recipe = recipe
         self.__rating = rating
