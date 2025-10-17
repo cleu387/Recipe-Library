@@ -7,7 +7,7 @@ data_path = Path('tests') / 'data' / 'recipes-excerpt.csv'
 
 
 repo.repo_instance = MemoryRepository()
-populate(data_path, repo.repo_instance, False)
+populate(repo.repo_instance, False, data_path)
 
 
 

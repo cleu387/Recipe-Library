@@ -7,9 +7,12 @@ from recipe.adapters.datareader.CSVReader import CSVDataReader
 
 
 
-def populate(data_path: Path, repo: AbstractRepository, database_mode : bool):
+def populate(repo: AbstractRepository, database_mode : bool, datapath=None):
     BASE_DIR = Path(__file__).resolve().parent
-    filepath = data_path
+    if datapath is None:
+        filepath = BASE_DIR.parent / "adapters" / "datareader" / "data" / "recipes.csv"
+    else:
+        filepath = datapath
     reader = CSVDataReader(str(filepath))
     reader.read_recipes_csv()
     if database_mode:

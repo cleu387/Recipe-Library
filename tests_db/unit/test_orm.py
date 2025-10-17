@@ -14,7 +14,7 @@ def make_author():
 
 def make_nutrition() -> Nutrition:
     nutrition = Nutrition(
-        id=1,
+        nutrition_id=1,
         calories=250.0,
         fat=10.0,
         saturated_fat=3.0,

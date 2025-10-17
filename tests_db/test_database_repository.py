@@ -3,12 +3,14 @@ from datetime import datetime
 from recipe.adapters.DatabaseRepository import SqlAlchemyRepository
 from recipe.domainmodel.author import Author
 from recipe.domainmodel.recipe import Recipe
+from recipe.domainmodel.user import User
 
 
 def test_repository_can_get_recipes(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
-    recipes = repo.get_all_recipes()
+    recipes = repo.get_recipe()
+    print(recipes)
     assert len(recipes) == 13
 
 
@@ -48,11 +50,10 @@ def test_repository_does_not_retrieve_a_non_existent_recipe(session_factory):
 def test_repository_can_retrieve_recipes(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
-    recipe = repo.get_recipe(38)
+    recipe = repo.get_recipe()
     assert recipe.name == "Low-Fat Berry Blue Frozen Dessert"
     assert recipe.author.name == "Dancer"
 
-# TODO: Test you can get the number of recipes in the testing file recipes_excerpt.csv.
 def test_repository_can_retrieve_recipes_count(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
@@ -60,7 +61,6 @@ def test_repository_can_retrieve_recipes_count(session_factory):
     assert number_of_recipes == 13
 
 
-# TODO: Test you can retrieve all 10 recipes for your browse page.
 def test_repository_can_retrieve_all_recipes(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
@@ -68,7 +68,6 @@ def test_repository_can_retrieve_all_recipes(session_factory):
     assert len(recipes) == 10
 
 
-# TODO: Test you can add authors.
 def test_repository_can_add_author(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
@@ -82,7 +81,6 @@ def test_repository_can_add_author(session_factory):
     assert author2 in authors
 
 
-# TODO: Test you can retrieve authors.
 def test_repository_can_retrieve_authors(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
@@ -91,8 +89,17 @@ def test_repository_can_retrieve_authors(session_factory):
     repo.add_author(author1)
     repo.add_author(author2)
 
-    authors = repo.get_authors('name')
+    authors = repo.get_authors()
     assert authors[0] == author1
     assert authors[1] == author2
 
+def test_repository_can_retrieve_users(session_factory):
+    repo = SqlAlchemyRepository(session_factory)
 
+    user1 = User("NewUser22", "NewUser22")
+    user2 = User("CoolGuy88", "CoolGuy88")
+    repo.add_user(user1)
+    repo.add_user(user2)
+    users = [repo.get_user("NewUser22"), repo.get_user("CoolGuy88")]
+    assert users[0] == user1
+    assert users[1] == user2
