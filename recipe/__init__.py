@@ -12,7 +12,6 @@ from sqlalchemy.orm import sessionmaker, clear_mappers
 from sqlalchemy.pool import NullPool
 
 
-import recipe.authentication.services as auth
 
 def create_app():
     """Construct the core application."""
@@ -67,7 +66,6 @@ def create_app():
 
         from .users import users
         app.register_blueprint(users.users_blueprint)
-        auth.add_user("ASDasd123", "ASDasd123", repo.repo_instance)
 
         @app.before_request
         def before_flask_http_request_function():

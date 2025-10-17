@@ -37,7 +37,9 @@ def recipeDescription(recipe_id):
     username = session.get("username")
     user = review_services.get_user(repo.repo_instance, username)
     recipe.health_stars = calculate_health_rating(recipe.nutrition)
-    fav_exist = services.if_favourite_exists(recipe_id, user, repo.repo_instance)
+    fav_exist = False
+    if user:
+        fav_exist = services.if_favourite_exists(recipe_id, user, repo.repo_instance)
 
     return render_template(
         "recipebrowse/recipeDescription.html",

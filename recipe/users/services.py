@@ -1,8 +1,5 @@
-from flask import session
-
 from recipe.adapters.Repository import AbstractRepository
 from recipe.domainmodel.recipe import Recipe
-from recipe.domainmodel.favourite import Favourite
 
 class NonExistentRecipe(Exception):
     pass

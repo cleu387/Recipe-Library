@@ -1,18 +1,14 @@
 from abc import ABC
 from typing import List, Type
-from recipe.adapters.orm import recipes_table, author_table, categories_table
-from sqlalchemy import func
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import or_, func
+from sqlalchemy import func
 from recipe.adapters.Repository import AbstractRepository
-from recipe.browse.services import get_recipe_by_id
 from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.author import Author
 from recipe.domainmodel.category import Category
 from recipe.domainmodel.user import User
 from recipe.domainmodel.review import Review
-from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.favourite import Favourite
 from recipe.domainmodel.recipe_image import RecipeImage
 from recipe.domainmodel.recipe_ingredient import RecipeIngredient
