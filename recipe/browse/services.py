@@ -58,41 +58,38 @@ def calculate_health_rating(nutrition):
         return None
 
     score = 5
-    calories_per_meal = range(600,700)
-    fat_per_meal = range(15,25)
-    saturated_fat_per_meal = range(5,7)
+    calories_per_meal = range(600,701)
+    fat_per_meal = range(15,26)
+    saturated_fat_per_meal = range(5,8)
     cholesterol_per_meal = 100
     sodium_per_meal = 800
-    carbohydrates_per_meal = range(60,100)
+    carbohydrates_per_meal = range(60,101)
     sugar_per_meal = 15
-    fiber_per_meal = range(8,12)
-    protein_per_meal = range(20,30)
+    fiber_per_meal = range(8,13)
+    protein_per_meal = range(20,31)
 
 
 
     if nutrition.calories not in calories_per_meal:
-        score -= 1
+        score -= 0.5
     if nutrition.fat not in fat_per_meal:
-        score -= 1
+        score -= 0.5
     if nutrition.saturated_fat not in saturated_fat_per_meal:
-        score -= 1
+        score -= 0.5
     if nutrition.cholesterol > cholesterol_per_meal:
-        score -= 1
+        score -= 0.5
     if nutrition.sodium > sodium_per_meal:
-        score -= 1
+        score -= 0.5
     if nutrition.carbohydrates not in carbohydrates_per_meal:
-        score -= 1
+        score -= 0.5
     if nutrition.sugar > sugar_per_meal:
-        score -= 1
+        score -= 0.5
 
     if nutrition.fiber in fiber_per_meal:
         score += 1
     if nutrition.protein in protein_per_meal:
         score += 1
 
-    if score > 5:
-        score = 5
-    if score < 0:
-        score = 0
+    score = max(1, min(score, 5))
 
     return score
