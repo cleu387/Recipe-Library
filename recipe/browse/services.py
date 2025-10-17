@@ -53,6 +53,10 @@ def add_favourite_recipe(recipe_id: int, username: str, repo: AbstractRepository
     favourite = Favourite(user=user, recipe=recipe)
     repo.add_favourite(favourite)
 
+def if_favourite_exists(recipe_id: int, user: User, repo: AbstractRepository):
+    favourites = repo.get_favourites(user)
+    return any(fav.recipe.id == recipe_id for fav in favourites)
+
 
 def calculate_health_rating(nutrition):
     if nutrition is None:

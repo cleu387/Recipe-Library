@@ -150,6 +150,16 @@ def test_remove_favourites(repository):
     assert test_recipe2 in favourite
     assert isinstance(favourite, list)
 
+def test_if_favourite_exists(repository):
+    new_username = 'Edwin'
+    new_password = 'EdwinNoLikeCooking101'
 
+    auth_services.add_user(new_username, new_password, repository)
+    user = repository.get_user(new_username)
+    test_recipe = repository.get_recipe()[0]
 
+    assert browse_services.if_favourite_exists(test_recipe.id, user, repository) == False
 
+    browse_services.add_favourite_recipe(test_recipe.id, new_username, repository)
+
+    assert browse_services.if_favourite_exists(test_recipe.id, user, repository) == True

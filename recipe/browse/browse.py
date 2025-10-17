@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 import recipe.adapters.Repository as repo
 import recipe.browse.services as services
 from recipe.browse import review_services as review_services
-from recipe.authentication.authentication import login_required
+from recipe.users import services as user_services
 from recipe.authentication.authentication import login_required
 from recipe.browse.services import calculate_health_rating, FavouriteAlreadyExists
 
@@ -37,13 +37,15 @@ def recipeDescription(recipe_id):
     username = session.get("username")
     user = review_services.get_user(repo.repo_instance, username)
     recipe.health_stars = calculate_health_rating(recipe.nutrition)
+    fav_exist = services.if_favourite_exists(recipe_id, user, repo.repo_instance)
 
     return render_template(
         "recipebrowse/recipeDescription.html",
         title=f"Recipe: {recipe.name}",
         recipe=recipe,
         reviews=reviews,
-        current_user = user
+        current_user = user,
+        favourite = fav_exist
     )
 
 @browse_blueprint.route("/recipe/<int:recipe_id>/favourites", methods=["POST"])
@@ -58,6 +60,13 @@ def add_favourites(recipe_id):
     return redirect(
         url_for('recipe_bp.recipeDescription', recipe_id=recipe_id)
     )
+
+@browse_blueprint.route("/recipe/<int:recipe_id>", methods=["POST"])
+@login_required
+def remove_favourite(recipe_id):
+    username = session.get("username")
+    user_services.remove_favourite_recipe(recipe_id, username, repo.repo_instance)
+    return redirect(url_for('recipe_bp.recipeDescription', recipe_id=recipe_id))
 
 @browse_blueprint.route("/recipe/<int:recipe_id>", methods=["POST"])
 @login_required
