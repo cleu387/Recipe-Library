@@ -47,7 +47,7 @@ class SessionContextManager:
             self.__session.close()
 
 
-class SqlAlchemyRepository(AbstractRepository, ABC):
+class SqlAlchemyRepository(AbstractRepository):
     def __init__(self, session_factory):
         self._session_cm = SessionContextManager(session_factory)
 
@@ -65,10 +65,15 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             scm.session.commit()
 
     def get_authors(self) -> List[Author]:
-        pass
+        query = self._session_cm.session.query(Author)
+
+        authors = query.all()
+        # Populate all recipes with related data
+        return authors
 
     def get_number_of_authors(self) -> int:
-        pass
+        count = self._session_cm.session.query(Author).count()
+        return count
 
     def add_multiple_authors(self, authors: List[Author]):
         seen_ids = set()
@@ -92,10 +97,15 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
             scm.commit()
 
     def get_categories(self) -> List[Category]:
-        pass
+        query = self._session_cm.session.query(Category)
+
+        category = query.all()
+        # Populate all recipes with related data
+        return category
 
     def get_number_of_categories(self) -> int:
-        pass
+        count = self._session_cm.session.query(Category).count()
+        return count
 
     def add_multiple_categories(self, categories: List[Category]):
         with self._session_cm as scm:
