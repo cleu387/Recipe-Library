@@ -1,8 +1,8 @@
 import pytest
-
+import html
 from recipe.adapters.MemoryRepository import MemoryRepository
 from recipe.adapters.populate import populate
-import recipe.adapters.Repository as repo
+from recipe.adapters import Repository as repo
 
 
 
@@ -16,9 +16,10 @@ def test_browse_recipes(client):
     response = client.get("/browse")
     assert response.status_code == 200
     data = response.data.decode("utf-8")
+    data = html.unescape(data)
     recipe = repo.repo_instance.get_recipes(page=1, per_page=20, search_query="")
     for r in recipe:
-        assert r.name in data
+        assert html.unescape(r.name) in data
 
 
 def test_browse_recipes_page2(client):
@@ -26,14 +27,15 @@ def test_browse_recipes_page2(client):
     response = client.get("/browse?page=2")
     assert response.status_code == 200
     data = response.data.decode("utf-8")
+    data = html.unescape(data)
 
     page1_recipe = repo.repo_instance.get_recipes(page=1,per_page=20, search_query="")
     page2_recipe = repo.repo_instance.get_recipes(page=2,per_page=20, search_query="")
 
     for r in page1_recipe:
-        assert r.name not in data
+        assert html.unescape(r.name) not in data
     for r in page2_recipe:
-        assert r.name in data
+        assert html.unescape(r.name) in data
 
 
 
