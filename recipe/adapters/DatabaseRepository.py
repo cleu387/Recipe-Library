@@ -350,7 +350,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
     # endregion
 
     #region RecipeSearch Methods
-    def get_recipes(self, search_query=None, search_type="name",page=1, per_page=20):
+    def get_recipes(self, page=1, per_page=20, search_query=None, search_type="name"):
         session = self._session_cm.session
         query = session.query(Recipe)
 

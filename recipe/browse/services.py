@@ -9,7 +9,7 @@ def get_number_of_recipes(repo, search_query=None, search_type="name"):
     return repo.get_recipe_count(search_query, search_type)
 
 def get_recipe(repo, search_query=None, search_type="name", page=1, per_page=20):
-    recipes = repo.get_recipes(search_query, search_type, page, per_page)
+    recipes = repo.get_recipes(page, per_page, search_query, search_type)
     recipe_dicts = []
     for recipe in recipes:
         recipe_dicts.append({

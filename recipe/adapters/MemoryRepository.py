@@ -155,3 +155,11 @@ class MemoryRepository(AbstractRepository):
 
     #endregion
 
+    #region RecipeSearch
+    def get_recipes(self, page: int, per_page: int, search_query: str, search_type: str = 'name') -> List[Recipe]:
+        pass
+
+    def get_recipe_count(self, search_query: str, search_type: str = "name") -> int:
+        pass
+
+    #endregion

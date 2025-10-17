@@ -142,6 +142,15 @@ class AbstractRepository(abc.ABC):
 
     #endregion
 
+    #region RecipeSearch
+    @abc.abstractmethod
+    def get_recipes(self, page:int, per_page:int, search_query: str, search_type:str = 'name') -> List[Recipe]:
+        """" Gets a list of  Recipes to the repository. """
+        raise NotImplementedError
 
+    @abc.abstractmethod
+    def get_recipe_count(self, search_query: str, search_type:str = "name") -> int:
+        """" Gets a number of  Recipes to the repository. """
+        raise NotImplementedError
 
-
+    #endregion
