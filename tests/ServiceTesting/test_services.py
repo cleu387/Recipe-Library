@@ -128,11 +128,10 @@ def test_get_favourites(repository):
     browse_services.add_favourite_recipe(test_recipe2.id, new_username, repository)
 
     favourite = users_services.get_favourites(new_username, repository)
-    favourite_recipes = [fav.recipe for fav in favourite]
-    assert test_recipe1 in favourite_recipes
-    assert test_recipe2 in favourite_recipes
+    assert test_recipe1 in favourite
+    assert test_recipe2 in favourite
     assert test_recipe1 != test_recipe2
-    assert isinstance(favourite_recipes, list)
+    assert isinstance(favourite, list)
 
 def test_remove_favourites(repository):
     new_username = 'Edwin'
@@ -147,9 +146,8 @@ def test_remove_favourites(repository):
 
     users_services.remove_favourite_recipe(test_recipe1.id, new_username, repository)
     favourite = users_services.get_favourites(new_username, repository)
-    favourite_recipes = [fav.recipe for fav in favourite]
-    assert test_recipe1 not in favourite_recipes
-    assert test_recipe2 in favourite_recipes
+    assert test_recipe1 not in favourite
+    assert test_recipe2 in favourite
     assert isinstance(favourite, list)
 
 

@@ -231,13 +231,13 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
                     scm.session.delete(favourite)
             scm.session.commit()
 
-    def get_favourites(self, user: User) -> List[Recipe]:
+    def get_favourites(self, user: User) -> List[Favourite]:
         favourites = []
         try:
             query = self._session_cm.session.query(Favourite).filter(
                 Favourite.user_id == user.id).all()
             for favourite in query:
-                favourites.append(self.get_recipe_by_id(favourite.recipe_id))
+                favourites.append(favourite)
 
         except NoResultFound:
             print(f'List of favourite from {user.username} was not found')

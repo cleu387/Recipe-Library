@@ -3,7 +3,6 @@ from typing import List
 from recipe.domainmodel.author import Author
 from recipe.domainmodel.category import Category
 from recipe.domainmodel.favourite import Favourite
-from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.review import Review
 from recipe.domainmodel.user import User
@@ -136,7 +135,7 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_favourites(self, user: User) -> List[Recipe]:
+    def get_favourites(self, user: User) -> List[Favourite]:
         """" Gets a list of Favourite Recipes to the repository. """
         raise NotImplementedError
 

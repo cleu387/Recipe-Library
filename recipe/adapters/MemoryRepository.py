@@ -142,8 +142,8 @@ class MemoryRepository(AbstractRepository):
                 user.remove_favourite_recipe(favourite)
                 return
 
-    def get_favourites(self, user: User) -> List[Recipe]:
-        return [fav.recipe for fav in self.__favourites if fav.user == user]
+    def get_favourites(self, user: User) -> List[Favourite]:
+        return [fav for fav in self.__favourites if fav.user == user]
 
     #endregion
 
