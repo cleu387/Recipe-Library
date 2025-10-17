@@ -18,8 +18,9 @@ def test_browse_recipes(client):
     response = client.get("/browse")
     assert response.status_code == 200
     data = response.data.decode("utf-8")
-    first_recipe = repo.repo_instance.get_recipe()[0]
-    assert first_recipe.name in data
+    recipes = repo.repo_instance.get_recipes(page=1, per_page=20, search_query="")
+    for r in recipes:
+        assert r.name in data
 
 
 def test_browse_recipes_page2(client):
