@@ -1,6 +1,7 @@
 """Initialize Flask app."""
 from datetime import datetime
 from flask import Flask
+from pathlib import Path
 import recipe.adapters.Repository as repo
 from recipe.adapters.MemoryRepository import MemoryRepository
 from recipe.adapters.DatabaseRepository import SqlAlchemyRepository
@@ -19,11 +20,11 @@ def create_app():
     app = Flask(__name__)
 
     app.config.from_object('config.Config')
-
+    data_path = Path('recipes') / 'adapters' / 'datareader' / 'data' / 'recipes.csv'
 
     if app.config['REPOSITORY'] == 'memory':
         repo.repo_instance = MemoryRepository()
-        populate(repo.repo_instance, False)
+        populate(data_path, repo.repo_instance, False)
 
     elif app.config['REPOSITORY'] == 'database':
         database_uri = app.config['SQLALCHEMY_DATABASE_URI']
@@ -48,7 +49,7 @@ def create_app():
 
             map_model_to_tables()
 
-            populate(repo.repo_instance, True)
+            populate(data_path, repo.repo_instance, True)
             print("REPOPULATING DATABASE... FINISHED")
 
         else:

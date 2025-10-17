@@ -8,11 +8,15 @@ from recipe.domainmodel.author import Author
 from recipe.domainmodel.category import Category
 from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.user import User
+from pathlib import Path
+
+data_path = Path('tests') / 'data' / 'recipes-excerpt.csv'
+
 
 @pytest.fixture
 def memory_repository():
     mem_repo = MemoryRepository()
-    populate(mem_repo, False)
+    populate(data_path, mem_repo, False)
     return mem_repo
 
 def test_get_recipe(memory_repository):

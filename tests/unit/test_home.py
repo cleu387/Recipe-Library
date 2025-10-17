@@ -1,11 +1,13 @@
 from recipe.adapters.MemoryRepository import MemoryRepository
 from recipe.adapters.populate import populate
 import recipe.adapters.Repository as repo
+from pathlib import Path
 
+data_path = Path('tests') / 'data' / 'recipes-excerpt.csv'
 
 
 repo.repo_instance = MemoryRepository()
-populate(repo.repo_instance, False)
+populate(data_path, repo.repo_instance, False)
 
 
 
