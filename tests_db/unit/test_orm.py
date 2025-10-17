@@ -6,7 +6,6 @@ from recipe.domainmodel.author import Author
 from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.nutrition import Nutrition
 
-"""
 def make_author():
     author = Author(1, 'Bob')
     return author
@@ -130,4 +129,3 @@ def test_saving_of_recipe(empty_session):
         recipe.description,
         recipe.nutrition.id,
     )]
-"""

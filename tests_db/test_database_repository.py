@@ -4,7 +4,6 @@ from recipe.adapters.DatabaseRepository import SqlAlchemyRepository
 from recipe.domainmodel.author import Author
 from recipe.domainmodel.recipe import Recipe
 
-
 def test_repository_can_get_recipes(session_factory):
     repo = SqlAlchemyRepository(session_factory)
 
@@ -85,5 +84,3 @@ def test_repository_can_retrieve_authors(session_factory):
     authors = repo.get_authors()
     assert authors[0] == author1
     assert authors[1] == author2
-
-

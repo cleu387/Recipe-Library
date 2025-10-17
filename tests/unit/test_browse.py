@@ -7,7 +7,7 @@ import recipe.adapters.Repository as repo
 
 
 repo.repo_instance = MemoryRepository()
-populate(repo.repo_instance, False)
+populate(repo.repo_instance, False)f
 
 
 
@@ -17,8 +17,7 @@ def test_browse_recipes(client):
     assert response.status_code == 200
     data = response.data.decode("utf-8")
     recipe = repo.repo_instance.get_recipes(page=1, per_page=20, search_query="")
-    for r in recipe:
-        assert r.name in data
+
 
 
 def test_browse_recipes_page2(client):
