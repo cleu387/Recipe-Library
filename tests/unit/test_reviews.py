@@ -6,16 +6,18 @@ import recipe.browse.review_services as services
 import recipe.authentication.services as auth_services
 from recipe.domainmodel.review import Review
 from recipe.domainmodel.user import User
+from pathlib import Path
 
+data_path = Path('tests') / 'data' / 'recipes-excerpt.csv'
 
 @pytest.fixture
 def repo():
     repository.repo_instance = MemoryRepository()
-    populate(repository.repo_instance, False)
+    populate(data_path, repository.repo_instance, False)
     return repository.repo_instance
 
 def test_get_no_reviews(client):
-    response = client.get("/recipe/3459")
+    response = client.get("/recipe/55")
     data = response.data.decode("utf-8")
     assert response.status_code == 200
     assert "No reviews yet :(" in data

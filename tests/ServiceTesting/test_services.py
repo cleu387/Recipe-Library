@@ -12,11 +12,14 @@ from recipe.domainmodel.nutrition import Nutrition
 from recipe.domainmodel.author import Author
 from recipe.domainmodel.category import Category
 from recipe.domainmodel.recipe import Recipe
+from pathlib import Path
+
+data_path = Path('tests') / 'data' / 'recipes-excerpt.csv'
 
 @pytest.fixture
 def repository():
     repo.repo_instance = MemoryRepository()
-    populate(repo.repo_instance, False)
+    populate(data_path, repo.repo_instance, False)
     return repo.repo_instance
 
 def test_get_number_of_recipes(repository):
@@ -54,13 +57,13 @@ def test_get_random_recipe(repository):
     # Tests that get random recipe does in fact return a random recipe
     import random
     recipes = repository.get_recipe()
-    random.seed(42)
+    random.seed(5)
     random_recipe = home_services.get_random_recipe(repository)
-    # Always returns recipe at index 456
+    # Always returns recipe at index
     assert random_recipe is not None
     assert isinstance(random_recipe, Recipe)
 
-    assert random_recipe == recipes[456]
+    assert random_recipe == recipes[9]
 
 def test_can_add_user(repository):
     new_username = 'Billy'

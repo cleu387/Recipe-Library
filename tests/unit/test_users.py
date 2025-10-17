@@ -3,12 +3,14 @@ from recipe.adapters.MemoryRepository import MemoryRepository
 from recipe.adapters.populate import populate
 import recipe.adapters.Repository as repository
 from recipe.domainmodel.favourite import Favourite
+from pathlib import Path
 
+data_path = Path('tests') / 'data' / 'recipes-excerpt.csv'
 
 @pytest.fixture
 def repo():
     repository.repo_instance = MemoryRepository()
-    populate(repository.repo_instance, False)
+    populate(data_path, repository.repo_instance, False)
     return repository.repo_instance
 
 def test_profile_requires_login(client):
