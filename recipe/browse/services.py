@@ -50,7 +50,8 @@ def add_favourite_recipe(recipe_id: int, username: str, repo: AbstractRepository
     for fav in favourites:
         if fav.user.id == user.id and fav.recipe.id == recipe.id:
             raise FavouriteAlreadyExists("The user has already favourite this recipe!")
-    repo.add_favourite(user, recipe)
+    favourite = Favourite(user=user, recipe=recipe)
+    repo.add_favourite(favourite)
 
 
 def calculate_health_rating(nutrition):

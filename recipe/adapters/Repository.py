@@ -126,7 +126,7 @@ class AbstractRepository(abc.ABC):
 
     #region Favourite_data
     @abc.abstractmethod
-    def add_favourite(self, user: User, recipe: Recipe) -> Recipe:
+    def add_favourite(self, favourite: Favourite):
         """" Adds a Favourite Recipe to the repository. """
         raise NotImplementedError
 
@@ -136,7 +136,7 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_favourites(self, user: User) -> List[Favourite]:
+    def get_favourites(self, user: User) -> List[Recipe]:
         """" Gets a list of Favourite Recipes to the repository. """
         raise NotImplementedError
 

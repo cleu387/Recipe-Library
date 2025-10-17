@@ -6,6 +6,7 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import or_, func
 from recipe.adapters.Repository import AbstractRepository
+from recipe.browse.services import get_recipe_by_id
 from recipe.domainmodel.recipe import Recipe
 from recipe.domainmodel.author import Author
 from recipe.domainmodel.category import Category
@@ -212,12 +213,7 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
     # region Favourite_data
 
-    def add_favourite(self, user: User, recipe: Recipe):
-        favourite = Favourite(
-            favourite_id=None,
-            user=user,
-            recipe=recipe
-        )
+    def add_favourite(self, favourite: Favourite):
         with self._session_cm as scm:
             with scm.session.no_autoflush:
                 scm.session.add(favourite)
@@ -233,11 +229,20 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
                 if favourite:
                     scm.session.delete(favourite)
+            scm.session.commit()
 
-    def get_favourites(self, user: User) -> List[Favourite]:
-        with self._session_cm as scm:
-            return scm.session.query(Favourite).filter(Favourite.user == user).all()
+    def get_favourites(self, user: User) -> List[Recipe]:
+        favourites = []
+        try:
+            query = self._session_cm.session.query(Favourite).filter(
+                Favourite.user_id == user.id).all()
+            for favourite in query:
+                favourites.append(self.get_recipe_by_id(favourite.recipe_id))
 
+        except NoResultFound:
+            print(f'List of favourite from {user.username} was not found')
+
+        return favourites
 
     # endregion
 
@@ -372,21 +377,9 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
         query = query.limit(per_page).offset((page - 1) * per_page)
         recipes_orm = query.all()
         recipes = []
-        for r in recipes_orm:
-            recipe_domain = Recipe(
-                recipe_id = r._Recipe__id,
-                name = r._Recipe__name,
-                author = r._Recipe__author,
-                description = r._Recipe__description,
-                images = [],
-                category = r._Recipe__category,
-                rating = r._Recipe__rating,
-                nutrition = r._Recipe__nutrition,
-                instructions = []
-            )
-
-            self._populate_recipe_data_in_session(recipe_domain, session)
-            recipes.append(recipe_domain)
+        for recipe in recipes_orm:
+            self._populate_recipe_data(recipe)
+            recipes.append(recipe)
 
         return recipes
 

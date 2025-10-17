@@ -18,12 +18,9 @@ class MemoryRepository(AbstractRepository):
         self.__recipes = list()
         self.__reviews = dict()
         self.__users = list()
-        self.__tags = list()
-        self.__favourite_id_counter = 1
         self.__favourites = list()
         self._next_user_id = 1
         self._next_category_id = 1
-        self._next_tag_id = 1
 
     #region Authors_data
     def add_author(self, author: Author):
@@ -133,13 +130,8 @@ class MemoryRepository(AbstractRepository):
     #endregion
 
     #region Favourite
-    def add_favourite(self, user: User, recipe: Recipe):
-        favourite = Favourite(
-            favourite_id=self.__favourite_id_counter,
-            user=user,
-            recipe=recipe
-        )
-        self.__favourite_id_counter += 1
+    def add_favourite(self, favourite: Favourite):
+        user = favourite.user
         user.add_favourite_recipe(favourite)
         self.__favourites.append(favourite)
 
@@ -150,8 +142,8 @@ class MemoryRepository(AbstractRepository):
                 user.remove_favourite_recipe(favourite)
                 return
 
-    def get_favourites(self, user: User) -> List[Favourite]:
-        return [recipe for recipe in self.__favourites if recipe.user == user]
+    def get_favourites(self, user: User) -> List[Recipe]:
+        return [fav.recipe for fav in self.__favourites if fav.user == user]
 
     #endregion
 

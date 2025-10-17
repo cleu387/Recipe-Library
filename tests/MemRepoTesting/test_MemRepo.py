@@ -88,8 +88,9 @@ def test_add_favourite(memory_repository):
     data = memory_repository.get_recipe()
     recipe = data[0]
     temp_user = User('Bob', 'Password1234')
+    favourite = Favourite(temp_user, recipe)
 
-    memory_repository.add_favourite(temp_user, recipe)
+    memory_repository.add_favourite(favourite)
     favourites = memory_repository.get_favourites(temp_user)
 
     assert len(favourites) == 1
@@ -103,8 +104,9 @@ def test_remove_favourite(memory_repository):
     data = memory_repository.get_recipe()
     recipe = data[0]
     temp_user = User('Bob', 'Password1234')
+    favourite = Favourite(temp_user, recipe)
 
-    memory_repository.add_favourite(temp_user, recipe)
+    memory_repository.add_favourite(favourite)
     memory_repository.remove_favourite(temp_user, recipe)
     favourites = memory_repository.get_favourites(temp_user)
 
@@ -116,9 +118,11 @@ def test_get_favourites(memory_repository):
     recipe1 = data[0]
     recipe2 = data[1]
     temp_user = User('Bob', 'Password1234')
+    favourite1 = Favourite(temp_user, recipe1)
+    favourite2 = Favourite(temp_user, recipe2)
 
-    memory_repository.add_favourite(temp_user, recipe1)
-    memory_repository.add_favourite(temp_user, recipe2)
+    memory_repository.add_favourite(favourite1)
+    memory_repository.add_favourite(favourite2)
     favourites = memory_repository.get_favourites(temp_user)
 
     assert len(favourites) == 2
