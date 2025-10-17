@@ -25,7 +25,7 @@ def test_add_reviews(client, repo):
     new_password = 'abcd1A23'
     user = User(new_username, new_password)
     recipe = repo.get_recipe_by_id(38)
-    review = Review(1, user, recipe, 3, "This is a review")
+    review = Review( user, recipe, 3, "This is a review")
 
     auth_services.add_user(new_username, new_password, repo)
     services.get_recipe_reviews(repo, 38)

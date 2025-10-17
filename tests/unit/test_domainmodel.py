@@ -373,9 +373,8 @@ def test_hash_favourite():
 def test_review_initialization():
     user = MockUser("Bob")
     recipe = MockRecipe(1, "Burger")
-    review = Review(1, user, recipe,5,"edible")
+    review = Review( user, recipe,5,"edible")
 
-    assert review.id == 1
     assert review.user == user
     assert review.recipe == recipe
     assert review.rating == 5
@@ -386,41 +385,41 @@ def test_review_custom_data():
     user = MockUser("Bob")
     recipe = MockRecipe(2, "Sushi")
     custom_date = (2025,1,1)
-    review = Review(2, user, recipe,4,"edible", created_date=custom_date)
+    review = Review(user, recipe,4,"edible", created_date=custom_date)
 
     assert review.date == custom_date
 #Test setting a valid rating updates the Review object
 def test_review_rating_setter_valid():
     user = MockUser("Bob")
     recipe = MockRecipe(3, "Burger")
-    review = Review(3, user, recipe,5,"edible")
+    review = Review( user, recipe,5,"edible")
     review.rating = 5
     assert review.rating == 5
 #Test that setting an invalid values raises a ValueError
 def test_review_rating_setter_invalid():
     user = MockUser("Bob")
     recipe = MockRecipe(4, "Burger")
-    review = Review(4, user, recipe,5,"edible")
+    review = Review( user, recipe,5,"edible")
     with pytest.raises(ValueError):
         review.rating = 6
 #Test that setting text correctly updates Review object correctly
 def test_review_text_setter():
     user = MockUser("Bob")
     recipe = MockRecipe(6, "Burger")
-    review = Review(6, user, recipe,5,"ok")
+    review = Review(user, recipe,5,"ok")
     review.review_text = "ok"
     assert review.review_text == "ok"
 #Test __repr__ method of Review returns the expected string format
 def test_review_repr():
     user = MockUser("Bob")
     recipe = MockRecipe(7, "Burger")
-    review = Review(7, user, recipe,9,"wow")
+    review = Review(user, recipe,9,"wow")
     expected_repr = f"{user}: {recipe}: 9 - wow"
     assert repr(review) == expected_repr
 #Test that Review objects with the same ID produce the same hash value
 def test_review_hash():
     user = MockUser("Bob")
     recipe = MockRecipe(8, "Burger")
-    review1 = Review(8, user, recipe,4,"crap")
-    review2 = Review(8,user,recipe,2,"burnt the kitchen down")
+    review1 = Review( user, recipe,4,"crap")
+    review2 = Review( user,recipe,2,"burnt the kitchen down")
     assert hash(review1) == hash(review2)
