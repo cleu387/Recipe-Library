@@ -7,7 +7,7 @@ from recipe.adapters import Repository as repo
 
 
 repo.repo_instance = MemoryRepository()
-populate(repo.repo_instance, False)f
+populate(repo.repo_instance, False)
 
 
 
