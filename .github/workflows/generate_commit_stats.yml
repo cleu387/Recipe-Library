@@ -1,8 +1,11 @@
-name: Generate Commit Stats
+name: Generate and Collect Commit Stats
 
 on:
   push:
     branches: [main]
+
+permissions:
+  contents: write
 
 jobs:
   stats:
@@ -12,21 +15,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history for all branches and tags
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: pip install gitpython
 
-      - name: Run commit stats script
+      - name: Run commit analysis and update central CSV
+        env:
+          CENTRAL_REPO_TOKEN: ${{ secrets.CENTRAL_REPO_TOKEN }}
         run: python generate_commit_stats.py
 
-      - name: Archive stats output
+      - name: Upload artifacts (optional)
         uses: actions/upload-artifact@v4
         with:
-          name: commit-stats
+          name: commit-stats-${{ github.event.repository.name }}
           path: stats/

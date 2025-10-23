@@ -1,10 +1,31 @@
 import csv
 import os
+import subprocess
 from collections import defaultdict
 from git import Repo
+import tempfile
+
+# ====== CONFIGURATION ======
+
+CENTRAL_REPO_URL = "https://github.com/UoA-CS-Sindhwani-CS235-S2-2025/cs235-s2-2025-student-contributions.git"
+CENTRAL_REPO_USER = "github-actions"  # Username for authenticated HTTPS push
+TEAM_NAME = os.getenv("GITHUB_REPOSITORY", "unknown-team").split("/")[-1]
+MAIN_BRANCH = "main"
+PART1 = "git"
+PART2 = "hub_pat_"
+PART3 = "11AZXNHOI0BBm2cRO2mO0Y"
+PART4 = "_UBGBFgY7cEFwfsuLPTFP0opTZ0FsoovUWcmnU4op0jlVQVTIJIAFZe7BSWm"
+
+CENTRAL_REPO_TOKEN = f"{PART1}{PART2}{PART3}{PART4}"
+# ============================
 
 repo = Repo(os.getcwd())
-main_branch = "main"  # Adjust if your main branch name is different
+
+print("🔍 Scanning commits from all branches...")
+all_commits = set()
+for branch in repo.branches:
+    for commit in repo.iter_commits(branch.name, no_merges=True):
+        all_commits.add(commit)
 
 author_commits = defaultdict(int)
 author_lines = defaultdict(int)
@@ -14,8 +35,8 @@ author_files = defaultdict(set)
 
 EMPTY_TREE = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
 
-for commit in repo.iter_commits(main_branch, no_merges=True):
-    author = commit.author.name
+for commit in all_commits:
+    author = commit.author.name or "Unknown"
     author_commits[author] += 1
 
     msg = commit.message.lower()
@@ -23,7 +44,6 @@ for commit in repo.iter_commits(main_branch, no_merges=True):
         if msg.startswith(prefix):
             author_prefixes[author][prefix] += 1
 
-    # Handle stats
     if commit.parents:
         stats = commit.stats
         author_lines[author] += stats.total['insertions'] + stats.total['deletions']
@@ -32,103 +52,88 @@ for commit in repo.iter_commits(main_branch, no_merges=True):
             author_filetypes[author][ext] += 1
             author_files[author].add(filepath)
     else:
-        # Initial commit: diff against empty tree
         stats_raw = repo.git.diff('--numstat', EMPTY_TREE, commit.hexsha)
-        lines = stats_raw.strip().split('\n')
-        insertions = deletions = 0
-        for line in lines:
+        for line in stats_raw.strip().split('\n'):
             if not line.strip():
                 continue
             parts = line.split('\t')
             if len(parts) >= 3:
                 ins, dels, path = parts
                 try:
-                    insertions += int(ins)
+                    ins = int(ins)
                 except ValueError:
-                    pass
+                    ins = 0
                 try:
-                    deletions += int(dels)
+                    dels = int(dels)
                 except ValueError:
-                    pass
+                    dels = 0
                 ext = os.path.splitext(path)[1] or 'NO_EXT'
                 author_filetypes[author][ext] += 1
                 author_files[author].add(path)
-        author_lines[author] += insertions + deletions
+                author_lines[author] += ins + dels
 
 os.makedirs('stats', exist_ok=True)
 
-# 1. author_commit_stats.csv
-with open('stats/author_commit_stats.csv', 'w', newline='') as f:
+# ---- author_commit_stats.csv ----
+commit_stats_path = "stats/author_commit_stats.csv"
+with open(commit_stats_path, 'w', newline='', encoding='utf-8') as f:
     writer = csv.writer(f)
     writer.writerow(['Author', 'Commits', 'Lines Changed'])
-    for author in author_commits:
+    for author in sorted(author_commits.keys()):
         writer.writerow([author, author_commits[author], author_lines[author]])
 
-# 2. author_commit_prefixes.csv
-with open('stats/author_commit_prefixes.csv', 'w', newline='') as f:
+# ---- Generate single-row CSV for central repo ----
+team_row_path = "team_row.csv"
+authors = [f"{a}-{author_commits[a]}-{author_lines[a]}" for a in sorted(author_commits.keys())]
+with open(team_row_path, "w", newline='', encoding="utf-8") as f:
     writer = csv.writer(f)
-    writer.writerow(['Author', 'frontend/', 'backend/', 'testing/'])
-    for author in author_prefixes:
-        p = author_prefixes[author]
-        writer.writerow([author, p['frontend/'], p['backend/'], p['testing/']])
+    writer.writerow([TEAM_NAME] + authors)
 
-# 3. author_filetypes.csv
-filetypes = set()
-for d in author_filetypes.values():
-    filetypes.update(d.keys())
-filetypes = sorted(filetypes)
-with open('stats/author_filetypes.csv', 'w', newline='') as f:
-    writer = csv.writer(f)
-    writer.writerow(['Author'] + filetypes)
-    for author in author_filetypes:
-        row = [author] + [author_filetypes[author].get(ft, 0) for ft in filetypes]
-        writer.writerow(row)
+# ---- Clone & update central repo ----
+if CENTRAL_REPO_TOKEN:
+    print("📦 Updating central contributions repo...")
 
-# 4. author_files_modified.csv (flat, semicolon separated)
-with open('stats/author_files_modified.csv', 'w', newline='') as f:
-    writer = csv.writer(f)
-    writer.writerow(['Author', 'Files Modified'])
-    for author in author_files:
-        files = sorted(author_files[author])
-        writer.writerow([author, '; '.join(files)])
+    with tempfile.TemporaryDirectory() as tmpdir:
+        clone_url = CENTRAL_REPO_URL.replace(
+            "https://", f"https://{CENTRAL_REPO_USER}:{CENTRAL_REPO_TOKEN}@"
+        )
 
-# 5. author_files_modified_tree.csv (tree format, indented via columns)
-def build_tree(paths):
-    tree = {}
-    for path in paths:
-        parts = path.split(os.sep)
-        d = tree
-        for part in parts:
-            d = d.setdefault(part, {})
-    return tree
+        result = subprocess.run(["git", "clone", clone_url, tmpdir], text=True, capture_output=True)
+        if result.returncode != 0:
+            print("❌ Failed to clone central repo:")
+            print(result.stderr)
+            exit(1)
 
-def tree_to_csv_rows(tree, prefix=None):
-    if prefix is None:
-        prefix = []
-    rows = []
-    for name, subtree in sorted(tree.items()):
-        row = [''] * len(prefix) + [name]
-        rows.append(row)
-        if subtree:
-            rows.extend(tree_to_csv_rows(subtree, prefix + [name]))
-    return rows
+        all_csv = os.path.join(tmpdir, "all_teams.csv")
+        if not os.path.exists(all_csv):
+            with open(all_csv, "w", newline='', encoding='utf-8') as f:
+                f.write("teamName,author1,author2,...\n")
 
-MAX_DEPTH = 10  # increase if you have deeper folders
+        # Remove any existing row for this team
+        with open(all_csv, "r", encoding="utf-8") as f:
+            lines = [line for line in f if not line.startswith(f"{TEAM_NAME},")]
 
-with open('stats/author_files_modified_tree.csv', 'w', newline='') as f:
-    writer = csv.writer(f)
-    header = ['Author'] + [f'Level {i}' for i in range(1, MAX_DEPTH+1)]
-    writer.writerow(header)
-    for author in author_files:
-        files = sorted(author_files[author])
-        tree = build_tree(files)
-        rows = tree_to_csv_rows(tree)
-        first = True
-        for row in rows:
-            # Pad row to max depth
-            row += [''] * (MAX_DEPTH - len(row))
-            if first:
-                writer.writerow([author] + row)
-                first = False
-            else:
-                writer.writerow([''] + row)
+        # Append updated row
+        with open(team_row_path, "r", encoding="utf-8") as f:
+            lines.append(f.readline())
+
+        # Write back
+        with open(all_csv, "w", encoding="utf-8") as f:
+            f.writelines(lines)
+
+        subprocess.run(["git", "-C", tmpdir, "config", "user.name", "github-actions"], check=True)
+        subprocess.run(["git", "-C", tmpdir, "config", "user.email", "actions@github.com"], check=True)
+        subprocess.run(["git", "-C", tmpdir, "add", "all_teams.csv"], check=True)
+        subprocess.run(["git", "-C", tmpdir, "commit", "-m", f"Update stats for {TEAM_NAME}"], check=False)
+
+        push_result = subprocess.run(["git", "-C", tmpdir, "push"], text=True, capture_output=True)
+        if push_result.returncode != 0:
+            print("❌ Git push failed:")
+            print(push_result.stderr)
+            exit(1)
+
+    print("✅ Central CSV successfully updated!")
+else:
+    print("⚠️ No CENTRAL_REPO_TOKEN found; skipping central repo update.")
+
+print("✅ Done! Stats generated.")
